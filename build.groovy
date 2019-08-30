@@ -2,7 +2,6 @@
 
 def isisDataPath = '/isisData/data'
 def isisTestDataPath = "/isisData/testData"
-def isisScriptsPath = '/isisData/isis3mgr_scripts'
 
 def isisEnv = [
     "ISIS3DATA=${isisDataPath}",
@@ -32,8 +31,13 @@ node("${env.OS.toLowerCase()}") {
             conda config --set channel_alias http://dmz-jenkins.wr.usgs.gov
             conda config --set always_yes True
             conda create -n isis python=3
-            conda env update -n isis -f environment.yml --prune
         '''
+
+        if (env.OS.toLowerCase() == "centos") {
+            sh 'conda env update -n isis -f environment_gcc4.yml --prune'
+        } else {
+            sh 'conda env update -n isis -f environment.yml --prune'
+        }
     }
     
     withEnv(isisEnv) {
@@ -45,7 +49,7 @@ node("${env.OS.toLowerCase()}") {
                         # Webhook test comment
                         source activate isis
                         cmake -GNinja ${cmakeFlags.join(' ')} ../isis
-                        source ${isisScriptsPath}/initIsisCmake.sh .
+                        python \$ISISROOT/isis/scripts/isis3VarInit.py
                         ninja -j4 install
                     """
                 }
@@ -60,7 +64,7 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running app tests on ${env.OS}"
                     sh """
                         source activate isis
-                        source ${isisScriptsPath}/initIsisCmake.sh .
+                        python \$ISISROOT/isis/scripts/isis3VarInit.py
                         ctest -R _app_ -j4 -VV
                     """
                 }
@@ -75,7 +79,7 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running module tests on ${env.OS}"
                     sh """
                         source activate isis
-                        source ${isisScriptsPath}/initIsisCmake.sh .
+                        python \$ISISROOT/isis/scripts/isis3VarInit.py
                         ctest -R _module_ -j4 -VV
                     """
                 }
@@ -90,7 +94,7 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running gtests on ${env.OS}"
                     sh """
                         source activate isis
-                        source ${isisScriptsPath}/initIsisCmake.sh .
+                        python \$ISISROOT/isis/scripts/isis3VarInit.py
                         ctest -R "." -E "(_app_|_unit_|_module_)" -j4 -VV
                     """
                 }
