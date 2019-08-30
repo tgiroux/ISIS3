@@ -2,6 +2,7 @@
 
 def isisDataPath = '/isisData/data'
 def isisTestDataPath = "/isisData/testData"
+def isisScriptsPath = '/isisData/isis3mgr_scripts'
 
 def isisEnv = [
     "ISIS3DATA=${isisDataPath}",
@@ -44,6 +45,7 @@ node("${env.OS.toLowerCase()}") {
                         # Webhook test comment
                         source activate isis
                         cmake -GNinja ${cmakeFlags.join(' ')} ../isis
+                        source ${isisScriptsPath}/initIsisCmake.sh .
                         ninja -j4 install
                     """
                 }
@@ -58,6 +60,7 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running app tests on ${env.OS}"
                     sh """
                         source activate isis
+                        source ${isisScriptsPath}/initIsisCmake.sh .
                         ctest -R _app_ -j4 -VV
                     """
                 }
@@ -72,7 +75,8 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running module tests on ${env.OS}"
                     sh """
                         source activate isis
-                        ctest -j4 -VV -R _module_
+                        source ${isisScriptsPath}/initIsisCmake.sh .
+                        ctest -R _module_ -j4 -VV
                     """
                 }
             }
@@ -86,7 +90,8 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running gtests on ${env.OS}"
                     sh """
                         source activate isis
-                        ctest -j4 -VV -R "." -E "(_app_|_unit_|_module_)"
+                        source ${isisScriptsPath}/initIsisCmake.sh .
+                        ctest -R "." -E "(_app_|_unit_|_module_)" -j4 -VV
                     """
                 }
             }
