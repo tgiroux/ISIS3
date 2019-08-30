@@ -49,7 +49,7 @@ node("${env.OS.toLowerCase()}") {
                         # Webhook test comment
                         source activate isis
                         cmake -GNinja ${cmakeFlags.join(' ')} ../isis
-                        python \$ISISROOT/isis/scripts/isis3VarInit.py
+                        python ../isis/scripts/isis3VarInit.py
                         ninja -j4 install
                     """
                 }
@@ -64,7 +64,7 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running app tests on ${env.OS}"
                     sh """
                         source activate isis
-                        python \$ISISROOT/isis/scripts/isis3VarInit.py
+                        python ../isis/scripts/isis3VarInit.py
                         ctest -R _app_ -j4 -VV
                     """
                 }
@@ -79,7 +79,7 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running module tests on ${env.OS}"
                     sh """
                         source activate isis
-                        python \$ISISROOT/isis/scripts/isis3VarInit.py
+                        python ../isis/scripts/isis3VarInit.py
                         ctest -R _module_ -j4 -VV
                     """
                 }
@@ -94,7 +94,7 @@ node("${env.OS.toLowerCase()}") {
                     env.STAGE_STATUS = "Running gtests on ${env.OS}"
                     sh """
                         source activate isis
-                        python \$ISISROOT/isis/scripts/isis3VarInit.py
+                        python ../isis/scripts/isis3VarInit.py
                         ctest -R "." -E "(_app_|_unit_|_module_)" -j4 -VV
                     """
                 }
