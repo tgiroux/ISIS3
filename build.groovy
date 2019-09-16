@@ -2,10 +2,12 @@
 
 def isisDataPath = '/isisData/data'
 def isisTestDataPath = "/isisData/testData"
+def isisBuildCache = "/isisBuild"
 
 def isisEnv = [
     "ISIS3DATA=${isisDataPath}",
-    "ISIS3TESTDATA=${isisTestDataPath}"
+    "ISIS3TESTDATA=${isisTestDataPath}",
+    "ISISROOT=${isisBuildCache}"
 ]
 
 def cmakeFlags = [
@@ -20,8 +22,8 @@ node("${env.OS.toLowerCase()}") {
     stage ("Checkout") {
         env.STAGE_STATUS = "Checking out ISIS"
         checkout scm
-        isisEnv.add("ISISROOT=${pwd()}/build")
         cmakeFlags.add("-DCMAKE_INSTALL_PREFIX=${pwd()}/install")
+        isisEnv.add("ISIS_SRC_DIR=${pwd()}")
     }
 
     stage("Create environment") {
@@ -41,14 +43,14 @@ node("${env.OS.toLowerCase()}") {
     }
     
     withEnv(isisEnv) {
-        dir("build") {
+        dir("${env.ISISROOT}") {
             stage ("Build") {
                 env.STAGE_STATUS = "Building ISIS on ${env.OS}"
                 sh """
                     source activate isis
                     cmake -GNinja ${cmakeFlags.join(' ')} ../isis
                     ninja -j4 install
-                    python ../isis/scripts/isis3VarInit.py --data-dir ${env.ISIS3DATA} --test-dir ${env.ISIS3TESTDATA}
+                    python ${env.ISIS_SRC_DIR}/isis/scripts/isis3VarInit.py --data-dir ${env.ISIS3DATA} --test-dir ${env.ISIS3TESTDATA}
                 """
             }
 
