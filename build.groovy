@@ -17,6 +17,7 @@ def cmakeFlags = [
 ]
 
 def build_ok = true
+def errors = []
 
 node("${env.OS.toLowerCase()}") {
     stage ("Checkout") {
@@ -44,56 +45,68 @@ node("${env.OS.toLowerCase()}") {
     
     withEnv(isisEnv) {
         dir("${env.ISISROOT}") {
-            stage ("Build") {
-                env.STAGE_STATUS = "Building ISIS on ${env.OS}"
-                sh """
-                    source activate isis
-                    cmake -GNinja ${cmakeFlags.join(' ')} ../isis
-                    ninja -j4 install
-                    python ${env.ISIS_SRC_DIR}/isis/scripts/isis3VarInit.py --data-dir ${env.ISIS3DATA} --test-dir ${env.ISIS3TESTDATA}
-                """
-            }
-
-            try{
-                stage("AppTests") {
-                    env.STAGE_STATUS = "Running app tests on ${env.OS}"
+            try {
+                stage ("Build") {
+                    env.STAGE_STATUS = "Building ISIS on ${env.OS}"
                     sh """
                         source activate isis
-                        ctest -R _app_ -j4 -VV
+                        cmake -GNinja ${cmakeFlags.join(' ')} ../isis
+                        ninja -j4 install
+                        python ${env.ISIS_SRC_DIR}/isis/scripts/isis3VarInit.py --data-dir ${env.ISIS3DATA} --test-dir ${env.ISIS3TESTDATA}
                     """
                 }
             }
             catch(e) {
                 build_ok = false
+                errors.add(env.STAGE_STATUS)
                 println e.toString()
             }
 
-            try{
-                stage("ModuleTests") {
-                    env.STAGE_STATUS = "Running module tests on ${env.OS}"
-                    sh """
-                        source activate isis
-                        ctest -R _module_ -j4 -VV
-                    """
+            if (build_ok) {
+                try{
+                    stage("AppTests") {
+                        env.STAGE_STATUS = "Running app tests on ${env.OS}"
+                        sh """
+                            source activate isis
+                            ctest -R _app_ -j4 -VV
+                        """
+                    }
                 }
-            }
-            catch(e) {
-                build_ok = false
-                println e.toString()
-            }
+                catch(e) {
+                    build_ok = false
+                    errors.add(env.STAGE_STATUS)
+                    println e.toString()
+                }
 
-            try{
-                stage("GTests") {
-                    env.STAGE_STATUS = "Running gtests on ${env.OS}"
-                    sh """
-                        source activate isis
-                        ctest -R "." -E "(_app_|_unit_|_module_)" -j4 -VV
-                    """
+                try{
+                    stage("ModuleTests") {
+                        env.STAGE_STATUS = "Running module tests on ${env.OS}"
+                        sh """
+                            source activate isis
+                            ctest -R _module_ -j4 -VV
+                        """
+                    }
                 }
-            }
-            catch(e) {
-                build_ok = false
-                println e.toString()
+                catch(e) {
+                    build_ok = false
+                    errors.add(env.STAGE_STATUS)
+                    println e.toString()
+                }
+
+                try{
+                    stage("GTests") {
+                        env.STAGE_STATUS = "Running gtests on ${env.OS}"
+                        sh """
+                            source activate isis
+                            ctest -R "." -E "(_app_|_unit_|_module_)" -j4 -VV
+                        """
+                    }
+                }
+                catch(e) {
+                    build_ok = false
+                    errors.add(env.STAGE_STATUS)
+                    println e.toString()
+                }
             }
         }
         
@@ -102,6 +115,11 @@ node("${env.OS.toLowerCase()}") {
         }
         else {
             currentBuild.result = "FAILURE"
+            def comment = "Failed during:\n"
+            errors.each {
+                comment += "- ${it}\n"
+            }
+            pullRequest.comment(comment)
         }
     }
 }
