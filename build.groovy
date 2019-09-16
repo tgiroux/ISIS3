@@ -42,20 +42,13 @@ node("${env.OS.toLowerCase()}") {
     
     withEnv(isisEnv) {
         dir("build") {
-            try {
-                stage ("Build") {
-                    env.STAGE_STATUS = "Building ISIS on ${env.OS}"
-                    sh """
-                        # Webhook test comment
-                        source activate isis
-                        cmake -GNinja ${cmakeFlags.join(' ')} ../isis
-                        ninja -j4 install
-                    """
-                }
-            }
-            catch(e) {
-                build_ok = false
-                println e.toString()
+            stage ("Build") {
+                env.STAGE_STATUS = "Building ISIS on ${env.OS}"
+                sh """
+                    source activate isis
+                    cmake -GNinja ${cmakeFlags.join(' ')} ../isis
+                    ninja -j4 install
+                """
             }
 
             try{
