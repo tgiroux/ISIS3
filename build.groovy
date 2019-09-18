@@ -2,12 +2,10 @@
 
 def isisDataPath = '/isisData/data'
 def isisTestDataPath = "/isisData/testData"
-def isisBuildCache = "/isisBuild"
 
 def isisEnv = [
     "ISIS3DATA=${isisDataPath}",
-    "ISIS3TESTDATA=${isisTestDataPath}",
-    "ISISROOT=${isisBuildCache}"
+    "ISIS3TESTDATA=${isisTestDataPath}"
 ]
 
 def cmakeFlags = [
@@ -52,8 +50,8 @@ node("${env.OS.toLowerCase()}") {
     stage ("Checkout") {
         env.STAGE_STATUS = "Checking out ISIS"
         checkout scm
+        isisEnv.add("ISISROOT=${pwd()}/build")
         cmakeFlags.add("-DCMAKE_INSTALL_PREFIX=${pwd()}/install")
-        isisEnv.add("ISIS_SRC_DIR=${pwd()}")
     }
 
     stage("Create environment") {
