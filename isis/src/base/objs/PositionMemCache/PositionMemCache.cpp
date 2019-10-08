@@ -4,7 +4,7 @@ namespace Isis {
 
   PositionMemCache::PositionMemCache(int targetCode, int observerCode) : Position(targetCode, observerCode) {}
 
-  void PositionMemCache::SetEphemerisTimeMemcache(double et) {
+  std::vector<std::vector<double>> PositionMemCache::SetEphemerisTime(double et) {
     // If the cache has only one position return it
     if(p_cache.size() == 1) {
       p_coordinate[0] = p_cache[0][0];
@@ -51,6 +51,12 @@ namespace Isis {
         p_velocity[2] = (p2[2] - p1[2]) * mult + p1[2];
       }
     }
+    std::vector<std::vector<double>> ephemerisData = {p_coordinate, {0.0, 0.0, 0.0}};
+
+    if (p_hasVelocity) {
+      ephemerisData = {p_coordinate, p_velocity};
+    }
+    return ephemerisData;
   }
 
   void PositionMemCache::addCacheCoordinate(std::vector<double> coordinate) {

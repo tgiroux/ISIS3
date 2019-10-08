@@ -9,7 +9,7 @@ namespace Isis {
       PositionMemCache(int targetCode, int observerCode);
 
       // Replicates logic from Position SetEphemerisTimeMemCache
-      virtual void SetEphemerisTimeMemcache(double et);
+      virtual std::vector<std::vector<double>> SetEphemerisTime(double et);
 
       void addCacheCoordinate(std::vector<double> coordinate);
 
