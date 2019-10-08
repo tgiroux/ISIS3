@@ -29,6 +29,12 @@
 
 #include <getSpkAbCorrState.hpp>
 
+#include <ale.h>
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
+
 #include "Constants.h"
 #include "Distance.h"
 #include "EllipsoidShape.h"
@@ -43,27 +49,11 @@
 #include "ShapeModel.h"
 #include "SpacecraftPosition.h"
 #include "Target.h"
+#include "Blob.h"
 
 using namespace std;
 
 namespace Isis {
-  /**
-   * Constructs a Spice object and loads SPICE kernels using information from the
-   * label object. The constructor expects an Instrument and Kernels group to be
-   * in the labels.
-   *
-   * @param lab Label containing Instrument and Kernels groups.
-   */
-
-  // TODO: DOCUMENT EVERYTHING
-  Spice::Spice(Pvl &lab) {
-    PvlGroup kernels = lab.findGroup("Kernels", Pvl::Traverse);
-    bool hasTables = (kernels["TargetPosition"][0] == "Table");
-
-    init(lab, !hasTables);
-  }
-
-
   /**
    * Constructs a Spice object and loads SPICE kernels using information from the
    * label object. The constructor expects an Instrument and Kernels group to be
@@ -90,8 +80,7 @@ namespace Isis {
     Pvl &lab = *cube.label();
     PvlGroup kernels = lab.findGroup("Kernels", Pvl::Traverse);
     bool hasTables = (kernels["TargetPosition"][0] == "Table");
-
-    init(lab, !hasTables);
+    init(cube, !hasTables);
   }
 
   /**
@@ -117,7 +106,7 @@ namespace Isis {
    * @internal
    *   @history 2011-02-08 Jeannie Walldren - Initialize pointers to null.
    */
-  void Spice::init(Pvl &lab, bool noTables) {
+  void Spice::init(Cube &cube, bool noTables) {
     NaifStatus::CheckErrors();
 
     // Initialize members
@@ -209,9 +198,9 @@ namespace Isis {
           load(kernels["InstrumentPointing"], noTables);
         }
 
-      if (kernels.hasKeyword("Frame")) {
-        load(kernels["Frame"], noTables);
-      }
+        if (kernels.hasKeyword("Frame")) {
+          load(kernels["Frame"], noTables);
+        }
 
         load(kernels["TargetAttitudeShape"], noTables);
         if (kernels.hasKeyword("Instrument")) {
@@ -385,6 +374,11 @@ namespace Isis {
         solarLongitude();
       }
     }
+    else if (m_usingAle) {
+      m_sunPosition->LoadCache(isd["SunPosition"]);
+      m_bodyRotation->LoadCache(isd["BodyRotation"]);
+      solarLongitude();
+    }
 
     //  We can't assume InstrumentPointing & InstrumentPosition exist, old
     //  files may be around with the old keywords, SpacecraftPointing &
@@ -411,6 +405,9 @@ namespace Isis {
     else if (kernels["InstrumentPointing"][0].toUpper() == "TABLE") {
       Table t("InstrumentPointing", lab.fileName(), lab);
       m_instrumentRotation->LoadCache(t);
+    }
+    else if (m_usingAle) {
+     m_instrumentRotation->LoadCache(isd["InstrumentPointing"]);
     }
 
     if (kernels["InstrumentPosition"].size() == 0) {
@@ -1049,7 +1046,7 @@ namespace Isis {
   QVariant Spice::readValue(QString key, SpiceValueType type, int index) {
     QVariant result;
 
-    if (m_usingNaif) {
+    if (m_usingNaif and !m_usingAle) {
       NaifStatus::CheckErrors();
 
       // This is the success status of the naif call
@@ -1179,7 +1176,7 @@ namespace Isis {
     // Read from PvlObject that is our naif keywords
     QVariant result;
 
-    if (m_naifKeywords->hasKeyword(key) && !m_usingNaif) {
+    if (m_naifKeywords->hasKeyword(key) && (!m_usingNaif || m_usingAle)) {
       PvlKeyword &storedKeyword = m_naifKeywords->findKeyword(key);
 
       try {
@@ -1258,6 +1255,7 @@ namespace Isis {
 
     SpiceBoolean found;
     SpiceDouble subB[3];
+
     surfpt_c(originB, usB, a, b, c, subB, &found);
 
     SpiceDouble mylon, mylat;
