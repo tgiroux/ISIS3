@@ -31,6 +31,7 @@
 
 #include "Table.h"
 #include "PolynomialUnivariate.h"
+#include "NaifStatus.h"
 
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -55,6 +56,8 @@ namespace Isis {
 
       Position(int targetCode, int observerCode);
 
+      Position();
+
       //! Destructor
       virtual ~Position();
 
@@ -65,7 +68,7 @@ namespace Isis {
       virtual QString GetAberrationCorrection() const;
       virtual double GetLightTime() const;
 
-      virtual std::vector<std::vector<double>> SetEphemerisTime(double et);
+      virtual void SetEphemerisTime(double et);
       enum PartialType {WRT_X, WRT_Y, WRT_Z};
 
       //! Return the current ephemeris time
@@ -84,9 +87,11 @@ namespace Isis {
       virtual const std::vector<double> &Velocity();
 
       //! Return the flag indicating whether the velocity exists
-      virtual bool HasVelocity() {
+      bool HasVelocity() {
         return p_hasVelocity;
       };
+
+      void setHasVelocity(bool hasVelocity);
 
       virtual void LoadCache(double startTime, double endTime, int size);
       virtual void LoadCache(double time);
@@ -104,6 +109,10 @@ namespace Isis {
       //! Is this position cached
       virtual bool IsCached() const {
         return (p_cache.size() > 0);
+      };
+
+      int cacheSize() {
+        return p_cache.size();
       };
 
       virtual void SetPolynomial(const Source type = PolyFunction);
@@ -148,10 +157,17 @@ namespace Isis {
       virtual void Memcache2HermiteCache(double tolerance);
       virtual std::vector<double> Extrapolate(double timeEt);
       virtual std::vector<double> HermiteCoordinate();
-      std::vector<double> LoadTimeCache(int startTime, int endTime, int size);
+      const std::vector<double>&  LoadTimeCache();
+      std::vector<double> LoadTimeCache(double startTime, double endTime, int size);
 
       virtual int getObserverCode() const;
       virtual int getTargetCode() const;
+      bool getHasVelocity();
+      void setSource(Source source);
+      void setStartTime(double time);
+      void setEndTime(double time);
+      void setSize(int size);
+
     protected:
       virtual void SetEphemerisTimeMemcache();
       virtual void SetEphemerisTimeHermiteCache();
@@ -218,7 +234,6 @@ namespace Isis {
       void init(int targetCode, int observerCode,
                 const bool &swapObserverTarget = false);
       void ClearCache();
-      void LoadTimeCache();
       void CacheLabel(Table &table);
       double ComputeVelocityInTime(PartialType var);
   };

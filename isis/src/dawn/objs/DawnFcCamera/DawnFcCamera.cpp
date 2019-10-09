@@ -48,6 +48,7 @@ namespace Isis {
    */
   DawnFcCamera::DawnFcCamera(Cube &cube) : FramingCamera(cube) {
     NaifStatus::CheckErrors();
+    std::cout << "Creating Dawn Camera" << '\n';
 
     m_spacecraftNameLong = "Dawn";
     m_spacecraftNameShort = "Dawn";
@@ -137,6 +138,7 @@ namespace Isis {
     double exposureDuration = (double)inst["ExposureDuration"] / 1000.0;
     pair<iTime, iTime> shuttertimes = ShutterOpenCloseTimes(et, exposureDuration);
     iTime centerTime = et + exposureDuration / 2.0;
+    printf("Apple %f8\n", et + exposureDuration / 2.0);
     setTime(centerTime);
 
     // Internalize all the NAIF SPICE information into memory.

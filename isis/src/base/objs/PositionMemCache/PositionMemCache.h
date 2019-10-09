@@ -8,16 +8,20 @@ namespace Isis {
     public:
       PositionMemCache(int targetCode, int observerCode);
 
+      PositionMemCache();
+
       // Replicates logic from Position SetEphemerisTimeMemCache
-      virtual std::vector<std::vector<double>> SetEphemerisTime(double et);
+      virtual void SetEphemerisTime(double et);
 
       void addCacheCoordinate(std::vector<double> coordinate);
 
       void addCacheVelocity(std::vector<double> velocity);
 
-      void addCacheTime(double et);
+      void addCacheTime(double time);
 
-      bool getHasVelocity();
+      void setCacheTime(std::vector<double> cacheTimes);
+
+      std::vector<double>& getCacheTime();
 
       // Only put memcach specific in here, let base do the generic
       // virtual Table Cache(const QString &tableName);

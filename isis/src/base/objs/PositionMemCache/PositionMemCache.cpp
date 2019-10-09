@@ -4,7 +4,22 @@ namespace Isis {
 
   PositionMemCache::PositionMemCache(int targetCode, int observerCode) : Position(targetCode, observerCode) {}
 
-  std::vector<std::vector<double>> PositionMemCache::SetEphemerisTime(double et) {
+  PositionMemCache::PositionMemCache() {
+    p_aberrationCorrection = "LT+S";
+    p_baseTime = 0.;
+    p_coordinate.resize(3);
+    p_hasVelocity = false;
+
+    p_override = NoOverrides;
+
+    p_timeBias = 0.0;
+    p_timeScale = 1.;
+    p_velocity.resize(3);
+
+    m_lt = 0.0;
+  }
+
+  void PositionMemCache::SetEphemerisTime(double et) {
     // If the cache has only one position return it
     if(p_cache.size() == 1) {
       p_coordinate[0] = p_cache[0][0];
@@ -51,12 +66,6 @@ namespace Isis {
         p_velocity[2] = (p2[2] - p1[2]) * mult + p1[2];
       }
     }
-    std::vector<std::vector<double>> ephemerisData = {p_coordinate, {0.0, 0.0, 0.0}};
-
-    if (p_hasVelocity) {
-      ephemerisData = {p_coordinate, p_velocity};
-    }
-    return ephemerisData;
   }
 
   void PositionMemCache::addCacheCoordinate(std::vector<double> coordinate) {
@@ -71,7 +80,11 @@ namespace Isis {
     p_cacheTime.push_back(time);
   }
 
-  bool PositionMemCache::getHasVelocity() {
-    return p_hasVelocity;
+  void PositionMemCache::setCacheTime(std::vector<double> cacheTime) {
+    p_cacheTime = cacheTime;
+  }
+
+  std::vector<double>& PositionMemCache::getCacheTime() {
+    return p_cacheTime;
   }
 }

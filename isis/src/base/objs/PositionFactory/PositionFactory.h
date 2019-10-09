@@ -8,6 +8,7 @@
 #include "SpacecraftPosition.h"
 #include "LightTimeCorrectionState.h"
 #include "Distance.h"
+#include "IException.h"
 
 namespace Isis {
 
@@ -26,7 +27,13 @@ namespace Isis {
 
       static Position* positionSpice(int targetCode, int observerCode);
 
-      static Position* fromSpiceToMemCache(PositionSpice *positionSpice, int startTime, int endTime, int size);
+      static Position* fromSpiceToMemCache(Position *positionSpice, int time);
+
+      static Position* fromSpiceToMemCache(Position *positionSpice, double startTime, double endTime, int size);
+
+      static Position* loadCache(json &isdPos);
+
+      static Position* loadCache(Table &positionEphemerids);
   };
 }
 

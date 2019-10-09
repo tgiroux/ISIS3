@@ -119,6 +119,8 @@ namespace Isis {
     }
   }
 
+  Position::Position() {}
+
 
   /**
    * Free the memory allocated by this Position instance
@@ -239,19 +241,11 @@ namespace Isis {
    *                      individual methods for each Source type
    *                      to make software more readable.
    */
-  std::vector<std::vector<double>> Position::SetEphemerisTime(double et) {
+  void Position::SetEphemerisTime(double et) {
     NaifStatus::CheckErrors();
-    std::vector<std::vector<double>> ephemerisData;
 
     // Save the time
-    if (et == p_et) {
-      ephemerisData = {p_coordinate, {0.0, 0.0, 0.0}};
-      if (p_hasVelocity) {
-        ephemerisData = {p_coordinate, p_velocity};
-      }
-      return ephemerisData;
-    }
-    p_et = et;
+    if (et == p_et) p_et = et;
 
     // Read from the cache
     if(p_source == Memcache) {
@@ -271,13 +265,6 @@ namespace Isis {
     }
 
     NaifStatus::CheckErrors();
-
-    // Return the coordinate
-    ephemerisData = {p_coordinate, {0.0, 0.0, 0.0}};
-    if (p_hasVelocity) {
-      ephemerisData = {p_coordinate, p_velocity};
-    }
-    return ephemerisData;
   }
 
 
@@ -526,9 +513,6 @@ namespace Isis {
       LineCache(tableName);
       // TODO Figure out how to get the tolerance -- for now hard code .01
       Memcache2HermiteCache(0.01);
-
-      //std::cout << "Cache size is " << p_cache.size();
-
     }
 
     // record to be added to table
@@ -1245,7 +1229,9 @@ namespace Isis {
     }
   }
 
-
+  void Position::setHasVelocity(bool hasVelocity) {
+    p_hasVelocity = hasVelocity;
+  }
 
   /**
    * This is a protected method that is called by
@@ -1748,7 +1734,7 @@ namespace Isis {
    *  to load the time cache.
    *
    */
-  void Position::LoadTimeCache() {
+  const std::vector<double>& Position::LoadTimeCache() {
     // Loop and load the time cache
     double cacheSlope = 0.0;
 
@@ -1760,9 +1746,11 @@ namespace Isis {
       double et = p_fullCacheStartTime + (double) i * cacheSlope;
       p_cacheTime.push_back(et);
     }
+
+    return p_cacheTime;
   }
 
-  std::vector<double> Position::LoadTimeCache(int startTime, int endTime, int size) {
+  std::vector<double> Position::LoadTimeCache(double startTime, double endTime, int size) {
     // Loop and load the time cache
     double cacheSlope = 0.0;
     std::vector<double> cacheTime;
@@ -1772,6 +1760,7 @@ namespace Isis {
 
     for(int i = 0; i < size; i++) {
       double et = startTime + (double) i * cacheSlope;
+      std::cout << "Banana " << et << std::endl;
       cacheTime.push_back(et);
     }
 
@@ -1901,6 +1890,7 @@ namespace Isis {
  * @return double Adjusted ephemeris time with time bias applied
  */
   double Position::getAdjustedEphemerisTime() const {
+    std::cout << "Apple " << EphemerisTime() << '\n';
     return (EphemerisTime() + GetTimeBias());
   }
 
@@ -2022,6 +2012,26 @@ namespace Isis {
   void Position::setLightTime(const double &lightTime) {
     m_lt = lightTime;
     return;
+  }
+
+  bool Position::getHasVelocity() {
+    return p_hasVelocity;
+  }
+
+  void Position::setSource(Source source) {
+    p_source = source;
+  }
+
+  void Position::setStartTime(double time) {
+    p_fullCacheStartTime = time;
+  }
+
+  void Position::setEndTime(double time) {
+    p_fullCacheEndTime = time;
+  }
+
+  void Position::setSize(int size) {
+    p_fullCacheSize = size;
   }
 
   // /** Resets the source interpolation of the position.

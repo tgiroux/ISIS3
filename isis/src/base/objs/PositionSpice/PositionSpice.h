@@ -9,7 +9,7 @@ namespace Isis {
       PositionSpice(int targetCode, int observerCode);
 
       // Replicates logic from Position SetEphemerisTimeMemCache
-      virtual std::vector<std::vector<double>> SetEphemerisTime(double et);
+      virtual void SetEphemerisTime(double et);
 
       // Only put memcach specific in here, let base do the generic
       // virtual Table Cache(const QString &tableName);
