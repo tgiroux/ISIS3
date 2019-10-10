@@ -4,19 +4,10 @@ namespace Isis {
 
   PositionMemCache::PositionMemCache(int targetCode, int observerCode) : Position(targetCode, observerCode) {}
 
-  PositionMemCache::PositionMemCache() {
-    p_aberrationCorrection = "LT+S";
-    p_baseTime = 0.;
-    p_coordinate.resize(3);
-    p_hasVelocity = false;
+  PositionMemCache::PositionMemCache() {}
 
-    p_override = NoOverrides;
-
-    p_timeBias = 0.0;
-    p_timeScale = 1.;
-    p_velocity.resize(3);
-
-    m_lt = 0.0;
+  PositionMemCache::~PositionMemCache() {
+    ClearCache();
   }
 
   void PositionMemCache::SetEphemerisTime(double et) {
@@ -66,6 +57,12 @@ namespace Isis {
         p_velocity[2] = (p2[2] - p1[2]) * mult + p1[2];
       }
     }
+  }
+
+  void PositionMemCache::ClearCache() {
+    p_cache.clear();
+    p_cacheVelocity.clear();
+    p_cacheTime.clear();
   }
 
   void PositionMemCache::addCacheCoordinate(std::vector<double> coordinate) {

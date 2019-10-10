@@ -407,9 +407,7 @@ bool tryKernels(Cube *icube, Process &p,
   try {
     Camera *cam;
     try {
-      std::cout << "Creating Camera" << '\n';
       cam = icube->camera();
-      std::cout << "Created Camera" << '\n';
       currentKernels = icube->group("Kernels");
 
       PvlKeyword source("Source");

@@ -2430,7 +2430,6 @@ namespace Isis {
    *                          ephemeris times to their own methods.
    */
   void Camera::LoadCache() {
-    std::cout << "In LoadCache" << '\n';
     // We want to stay in unprojected space for this process
     bool projIgnored = p_ignoreProjection;
     p_ignoreProjection = true;

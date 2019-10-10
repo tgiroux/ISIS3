@@ -146,7 +146,6 @@ namespace Isis {
 
     // Get the kernel group and load main kernels
     PvlGroup kernels = lab.findGroup("Kernels", Pvl::Traverse);
-    std::cout << kernels["Instrument"] << '\n';
 
     // Get the time padding first
     if (kernels.hasKeyword("StartPadding")) {
@@ -179,7 +178,6 @@ namespace Isis {
 
         json props;
         props["kernels"] = kernel_pvl.str();
-
         isd = ale::load(cube.fileName().toStdString(), props.dump(), "isis");
         json aleNaifKeywords = isd["NaifKeywords"];
         m_naifKeywords = new PvlObject("NaifKeywords", aleNaifKeywords);
@@ -356,16 +354,13 @@ namespace Isis {
     Distance targetRadius((radius[0] + radius[2])/2.0);
     m_instrumentPosition = PositionFactory::spacecraftPosition(*m_spkCode, *m_spkBodyCode,
                                                                ltState, targetRadius);
-    std::cout << "Building sun position" << '\n';
     m_sunPosition = PositionFactory::positionSpice(10, m_target->naifBodyCode());
-    std::cout << "Built sun position" << '\n';
 
     // Check to see if we have nadir pointing that needs to be computed &
     // See if we have table blobs to load
-    std::cout << kernels["TargetPosition"][0] << '\n';
     if (kernels["TargetPosition"][0].toUpper() == "TABLE") {
       Table t("SunPosition", lab.fileName(), lab);
-      m_sunPosition->LoadCache(t);
+      m_sunPosition = PositionFactory::loadCache(t);
 
       Table t2("BodyRotation", lab.fileName(), lab);
       m_bodyRotation->LoadCache(t2);
@@ -605,7 +600,6 @@ namespace Isis {
    */
   void Spice::createCache(iTime startTime, iTime endTime,
       int cacheSize, double tol) {
-    std::cout << "Instantiating Cache" << '\n';
     NaifStatus::CheckErrors();
 
     // Check for errors
@@ -666,12 +660,10 @@ namespace Isis {
     if (!m_sunPosition->IsCached()) {
       int sunPositionCacheSize = cacheSize;
       if (cacheSize > 2) sunPositionCacheSize = 2;
-      std::cout << "Attempting to convert to memcache" << '\n';
       m_sunPosition = PositionFactory::fromSpiceToMemCache(m_sunPosition,
                                                            startTime.Et() - *m_startTimePadding,
                                                            endTime.Et() + *m_endTimePadding,
                                                            sunPositionCacheSize);
-      std::cout << "Converted to memcache" << '\n';
     }
 
     // Save the time and cache size
@@ -760,9 +752,7 @@ namespace Isis {
     m_bodyRotation->SetEphemerisTime(et.Et());
     m_instrumentRotation->SetEphemerisTime(et.Et());
     m_instrumentPosition->SetEphemerisTime(et.Et());
-    std::cout << "Setting Sun time to " << et.Et() << '\n';
     m_sunPosition->SetEphemerisTime(et.Et());
-    std::cout << "Set Sun time" << '\n';
 
     std::vector<double> uB = m_bodyRotation->ReferenceVector(m_sunPosition->Coordinate());
     m_uB[0] = uB[0];

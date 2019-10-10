@@ -49,7 +49,6 @@ namespace Isis {
 
   Position* PositionFactory::loadCache(Table &positionEphemerids) {
     // Load the full cache time information from the label if available
-    std::cout << "IN LoadCache" << '\n';
     PositionMemCache* positionMemCache = new PositionMemCache();
 
     for (int r = 0; r < positionEphemerids.Records(); r++) {

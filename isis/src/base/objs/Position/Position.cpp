@@ -64,6 +64,10 @@ namespace Isis {
     init(targetCode, observerCode, swapObserverTarget);
   }
 
+  Position::Position() {
+    init();
+  }
+
 /**
  * @brief Internal initialization of the object support observer/target swap
  *
@@ -77,34 +81,9 @@ namespace Isis {
  *                             false will invoke preexisting behavior
  */
   void Position::init(int targetCode, int observerCode,
-                           const bool &swapObserverTarget) {
-
-    p_aberrationCorrection = "LT+S";
-    p_baseTime = 0.;
-    p_coefficients[0].clear();
-    p_coefficients[1].clear();
-    p_coefficients[2].clear();
-    p_coordinate.resize(3);
-    p_degree = 2;
-    p_degreeApplied = false;
-    p_et = -DBL_MAX;
-    p_fullCacheStartTime = 0;
-    p_fullCacheEndTime = 0;
-    p_fullCacheSize = 0;
-    p_hasVelocity = false;
-
-    p_override = NoOverrides;
-    p_source = Spice;
-
-    p_timeBias = 0.0;
-    p_timeScale = 1.;
-    p_velocity.resize(3);
-    p_xhermite = NULL;
-    p_yhermite = NULL;
-    p_zhermite = NULL;
-
+                      const bool &swapObserverTarget) {
+    init();
     m_swapObserverTarget = swapObserverTarget;
-    m_lt = 0.0;
 
     // Determine observer/target ordering
     if ( m_swapObserverTarget ) {
@@ -119,7 +98,33 @@ namespace Isis {
     }
   }
 
-  Position::Position() {}
+  void Position::init() {
+    p_aberrationCorrection = "LT+S";
+    p_baseTime = 0.0;
+    p_coefficients[0].clear();
+    p_coefficients[1].clear();
+    p_coefficients[2].clear();
+    p_coordinate.resize(3);
+    p_degree = 2;
+    p_degreeApplied = false;
+    p_et = -DBL_MAX;
+    p_fullCacheStartTime = 0.0;
+    p_fullCacheEndTime = 0.0;
+    p_fullCacheSize = 0.0;
+    p_hasVelocity = false;
+
+    p_override = NoOverrides;
+    p_source = Spice;
+
+    p_timeBias = 0.0;
+    p_timeScale = 1.0;
+    p_velocity.resize(3);
+    p_xhermite = NULL;
+    p_yhermite = NULL;
+    p_zhermite = NULL;
+
+    m_lt = 0.0;
+  }
 
 
   /**
@@ -1648,13 +1653,13 @@ namespace Isis {
     }
 
     if(p_yhermite) {
-      delete p_xhermite;
-      p_xhermite = NULL;
+      delete p_yhermite;
+      p_yhermite = NULL;
     }
 
     if(p_zhermite) {
-      delete p_xhermite;
-      p_xhermite = NULL;
+      delete p_zhermite;
+      p_zhermite = NULL;
     }
   }
 
@@ -1760,7 +1765,6 @@ namespace Isis {
 
     for(int i = 0; i < size; i++) {
       double et = startTime + (double) i * cacheSlope;
-      std::cout << "Banana " << et << std::endl;
       cacheTime.push_back(et);
     }
 
@@ -1890,7 +1894,6 @@ namespace Isis {
  * @return double Adjusted ephemeris time with time bias applied
  */
   double Position::getAdjustedEphemerisTime() const {
-    std::cout << "Apple " << EphemerisTime() << '\n';
     return (EphemerisTime() + GetTimeBias());
   }
 

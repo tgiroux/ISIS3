@@ -188,6 +188,7 @@ namespace Isis {
                               double &lightTime) const;
       virtual void setStateVector(const double state[6], const bool &hasVelocity);
       virtual void setLightTime(const double &lightTime);
+
       std::vector<double> p_cacheTime;    //!< iTime for corresponding position
       std::vector<std::vector<double> > p_cache;         //!< Cached positions
       std::vector<std::vector<double> > p_cacheVelocity; //!< Cached velocities
@@ -233,6 +234,7 @@ namespace Isis {
     private:
       void init(int targetCode, int observerCode,
                 const bool &swapObserverTarget = false);
+      void init();
       void ClearCache();
       void CacheLabel(Table &table);
       double ComputeVelocityInTime(PartialType var);
