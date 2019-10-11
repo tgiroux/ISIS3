@@ -27,11 +27,16 @@
 #include "Rotation.h"
 
 namespace Isis {
-  static Rotation* toClassicRotation(EphemerisRotation rotation);
-  static Rotation* create(json &isdRotation);
-  static Rotation* create(double time);
-  static Rotation* create(double startTime, double endTime, int size);
-  static Rotation* create(json isdRotation);
-  static Rotation* create(Table &table);
+  class RotationFactory {
+    public:
+      static Rotation* toClassicRotation(EphemerisRotation* rotation);
+      static EphemerisRotation* toEphemerisRotation(SpiceRotation* rotation, double startTime, double endTime, int cacheSize);
+      static Rotation* create(json &isdRotation);
+      static Rotation* create(double time);
+      static Rotation* create(int frameCode);
+      static Rotation* create(double startTime, double endTime, int size);
+      static Rotation* create(json isdRotation);
+      static Rotation* create(Table &table);
+  };
 }
 #endif

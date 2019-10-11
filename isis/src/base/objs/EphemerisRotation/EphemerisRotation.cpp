@@ -49,84 +49,8 @@ namespace Isis {
    *
    * @param frameCode Valid naif frame code.
    */
-  EphemerisRotation::EphemerisRotation(int frameCode) {
-    p_constantFrames.push_back(frameCode);
-    p_timeBias = 0.0;
-    p_source = Spice;
-    p_CJ.resize(9);
-    p_matrixSet = false;
-    p_et = -DBL_MAX;
-    p_degree = 2;
-    p_degreeApplied = false;
-    p_noOverride = true;
-    p_axis1 = 3;
-    p_axis2 = 1;
-    p_axis3 = 3;
-    p_minimizeCache = No;
-    p_hasAngularVelocity = false;
-    p_av.resize(3);
-    p_fullCacheStartTime = 0;
-    p_fullCacheEndTime = 0;
-    p_fullCacheSize = 0;
-    m_frameType = UNKNOWN;
-    m_tOrientationAvailable = false;
-  }
-
-
-  /**
-   * Construct an empty EphemerisRotation object using valid Naif frame code and.
-   * body code to set up for computing nadir rotation.  See required reading
-   * ftp://naif.jpl.nasa.gov/pub/naif/toolkit_docs/C/req/naif_ids.html
-   *
-   * @param frameCode Valid naif frame code.
-   * @param targetCode Valid naif body code.
-   *
-   * @throws IException::Io "Cannot find [key] in text kernels"
-   */
-  EphemerisRotation::EphemerisRotation(int frameCode, int targetCode) {
-    NaifStatus::CheckErrors();
-
-    p_constantFrames.push_back(frameCode);
-    p_targetCode = targetCode;
-    p_timeBias = 0.0;
-    p_source = Nadir;
-    p_CJ.resize(9);
-    p_matrixSet = false;
-    p_et = -DBL_MAX;
-    p_axisP = 3;
-    p_degree = 2;
-    p_degreeApplied = false;
-    p_noOverride = true;
-    p_axis1 = 3;
-    p_axis2 = 1;
-    p_axis3 = 3;
-    p_minimizeCache = No;
-    p_hasAngularVelocity = false;
-    p_av.resize(3);
-    p_fullCacheStartTime = 0;
-    p_fullCacheEndTime = 0;
-
-    p_fullCacheSize = 0;
-    m_frameType = DYN;
-    m_tOrientationAvailable = false;
-
-    // Determine the axis for the velocity vector
-    QString key = "INS" + toString(frameCode) + "_TRANSX";
-    SpiceDouble transX[2];
-    SpiceInt number;
-    SpiceBoolean found;
-    //Read starting at element 1 (skipping element 0)
-    gdpool_c(key.toLatin1().data(), 1, 2, &number, transX, &found);
-
-    if (!found) {
-      QString msg = "Cannot find [" + key + "] in text kernels";
-      throw IException(IException::Io, msg, _FILEINFO_);
-    }
-
-    p_axisV = 2;
-    if (transX[0] < transX[1]) p_axisV = 1;
-
-    NaifStatus::CheckErrors();
+  EphemerisRotation::EphemerisRotation() : Rotation() {
+     p_source = Memcache; 
   }
 
 
@@ -135,49 +59,8 @@ namespace Isis {
    *
    * @param rotToCopy const reference to other EphemerisRotation to copy
    */
-  EphemerisRotation::EphemerisRotation(const EphemerisRotation &rotToCopy) {
-    p_cacheTime = rotToCopy.p_cacheTime;
-    p_cache = rotToCopy.p_cache;
-    p_cacheAv = rotToCopy.p_cacheAv;
-    p_av = rotToCopy.p_av;
-    p_degree = rotToCopy.p_degree;
-    p_axis1 = rotToCopy.p_axis1;
-    p_axis2 = rotToCopy.p_axis2;
-    p_axis3 = rotToCopy.p_axis3;
-
-    p_constantFrames = rotToCopy.p_constantFrames;
-    p_timeFrames = rotToCopy.p_timeFrames;
-    p_timeBias = rotToCopy.p_timeBias;
-
-    p_et = rotToCopy.p_et;
-    p_quaternion = rotToCopy.p_quaternion;
-    p_matrixSet = rotToCopy.p_matrixSet;
-    p_source = rotToCopy.p_source;
-    p_axisP = rotToCopy.p_axisP;
-    p_axisV = rotToCopy.p_axisV;
-    p_targetCode = rotToCopy.p_targetCode;
-    p_baseTime = rotToCopy.p_baseTime;
-    p_timeScale = rotToCopy.p_timeScale;
-    p_degreeApplied = rotToCopy.p_degreeApplied;
-
-//    for (std::vector<double>::size_type i = 0; i < rotToCopy.p_coefficients[0].size(); i++)
-    for (int i = 0; i < 3; i++)
-      p_coefficients[i] = rotToCopy.p_coefficients[i];
-
-    p_noOverride = rotToCopy.p_noOverride;
-    p_overrideBaseTime = rotToCopy.p_overrideBaseTime;
-    p_overrideTimeScale = rotToCopy.p_overrideTimeScale;
-    p_minimizeCache = rotToCopy.p_minimizeCache;
-    p_fullCacheStartTime = rotToCopy.p_fullCacheStartTime;
-    p_fullCacheEndTime = rotToCopy.p_fullCacheEndTime;
-    p_fullCacheSize = rotToCopy.p_fullCacheSize;
-    p_TC = rotToCopy.p_TC;
-
-    p_CJ = rotToCopy.p_CJ;
-    p_degree = rotToCopy.p_degree;
-    p_hasAngularVelocity = rotToCopy.p_hasAngularVelocity;
-    m_frameType = rotToCopy.m_frameType;
-
+  EphemerisRotation::EphemerisRotation(const EphemerisRotation &rotToCopy) : Rotation(rotToCopy) { 
+    p_source = Memcache;
   }
 
 
@@ -325,7 +208,6 @@ namespace Isis {
       ident_c((SpiceDouble( *)[3]) &p_TC[0]);
     }
 
-    p_source = Memcache;
     SetEphemerisTime(p_cacheTime[0]);
   }
 
@@ -478,6 +360,7 @@ namespace Isis {
     // coefficient table for angle1, angle2, and angle3
     else if (recFields == 3) {
       throw "This is not supported by memcache"; 
+    }
     else  {
       QString msg = "Expecting either three, five, or eight fields in the EphemerisRotation table";
       throw IException(IException::Programmer, msg, _FILEINFO_);

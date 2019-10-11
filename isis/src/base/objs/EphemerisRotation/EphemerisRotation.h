@@ -29,25 +29,31 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-
 #include "Angle.h"
 #include "Table.h"
 #include "Quaternion.h"
+#include "Rotation.h"
 
 #define J2000Code    1
 
 namespace Isis {
 
+class EphemerisRotation : public Rotation {
+  public: 
+
+  EphemerisRotation();
   EphemerisRotation(int frameCode);
   EphemerisRotation(int frameCode, int targetCode);
   EphemerisRotation(const EphemerisRotation &rotToCopy);
-  EphemerisRotation::~EphemerisRotation(); 
+  ~EphemerisRotation(); 
   
-  virtual SetEphemerisTime(double et);
-  virtual MinimizeCache(DownsizeStatus status);
-  virtual LoadCache(Table &table);
-  virtual loadPCFromTable(const PvlObject &label); 
-  virtual CacheLabel(Table &table);/
+  virtual void SetEphemerisTime(double et);
+  virtual void MinimizeCache(DownsizeStatus status);
+  virtual void LoadCache(json &isdRot); 
+  virtual void LoadCache(Table &table);
+  virtual void loadPCFromTable(const PvlObject &label); 
+  virtual void CacheLabel(Table &table);
+  };
 }
 
 #endif

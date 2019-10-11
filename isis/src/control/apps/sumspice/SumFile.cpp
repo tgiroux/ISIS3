@@ -155,11 +155,11 @@ namespace Isis {
     // get new pointing quaternion from sum file
 
     // first, we get the rotattion between j2000 and target (i.e. body fixed frame)
-    SpiceRotation *body = mycam->bodyRotation();
+    SpiceRotation *body = (SpiceRotation*)mycam->bodyRotation();
     Quaternion j2000ToTarget(body->Matrix());
 
     // next, get the constant rotation for the camera from the cube's table
-    SpiceRotation *oldRotation = mycam->instrumentRotation();
+    SpiceRotation *oldRotation = (SpiceRotation*)mycam->instrumentRotation();
     Quaternion oldConstantRotation(oldRotation->ConstantRotation()); // old TC rotation
 
     // Get the new rotation from the sum file. 

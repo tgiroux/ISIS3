@@ -22,26 +22,7 @@
  *   http://www.usgs.gov/privacy.html.
  */
 
-<<<<<<< HEAD
 #include "Rotation.h"
-=======
-#include <string>
-#include <vector>
-
-//#include <SpiceUsr.h>
-//#include <SpiceZfc.h>
-//#include <SpiceZmc.h>
-
-#include <nlohmann/json.hpp>
-
-
-#include "Angle.h"
-#include "Table.h"
-#include "PolynomialUnivariate.h"
-#include "Quaternion.h"
-
-#define J2000Code    1
->>>>>>> 48e4efd1babab7e9608ec15cd4030cc7f51d66c2
 
 namespace Isis {
   /**

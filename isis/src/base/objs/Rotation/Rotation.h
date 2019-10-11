@@ -1,5 +1,5 @@
-#ifndef SpiceRotation_h
-#define SpiceRotation_h
+#ifndef Rotation_h
+#define Rotation_h
 /**
  * @file
  * $Revision: 1.20 $
@@ -25,13 +25,8 @@
 #include <string>
 #include <vector>
 
-//#include <SpiceUsr.h>
-//#include <SpiceZfc.h>
-//#include <SpiceZmc.h>
-
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
-
 
 #include "Angle.h"
 #include "Table.h"
@@ -44,15 +39,16 @@ namespace Isis {
   class Rotation {
     public:
       // Constructors
+      Rotation();
       Rotation(int frameCode);
-      /*      SpiceRotation( int NaifCode );
+      /*      Rotation( int NaifCode );
       We would like to call refchg instead to avoid the strings.  Currently Naif does
       not have refchg_c, but only the f2c'd refchg.c.*/
       Rotation(int frameCode, int targetCode);
-      Rotation(const SpiceRotation &rotToCopy);
+      Rotation(const Rotation &rotToCopy);
 
       // Destructor
-      virtual ~SpiceRotation();
+      virtual ~Rotation();
 
       // Change the frame (has no effect if cached)
       virtual void SetFrame(int frameCode);
@@ -226,37 +222,27 @@ namespace Isis {
       virtual std::vector<double> Extrapolate(double timeEt);
 
       virtual void checkForBinaryPck();
+      virtual void setSource(Source source) {
+        p_source = source ; 
+      }
 
-    protected:
-      virtual void SetFullCacheParameters(double startTime, double endTime, int cacheSize);
-      virtual void setEphemerisTimeMemcache();
-      virtual void setEphemerisTimeNadir();
-      virtual void setEphemerisTimeSpice();
-      virtual void setEphemerisTimePolyFunction();
-      virtual void setEphemerisTimePolyFunctionOverSpice();
-      virtual void setEphemerisTimePckPolyFunction();
-      virtual std::vector<double> p_cacheTime;  //!< iTime for corresponding rotation
-      virtual std::vector<std::vector<double> > p_cache; /**< Cached rotations, stored as
-                                                      rotation matrix from J2000
-                                                      to 1st constant frame (CJ) or
-                                                      coefficients of polynomial
-                                                      fit to rotation angles.*/
       int p_degree;                     //!< Degree of fit polynomial for angles
       int p_axis1;                      //!< Axis of rotation for angle 1 of rotation
       int p_axis2;                      //!< Axis of rotation for angle 2 of rotation
       int p_axis3;                      //!< Axis of rotation for angle 3 of rotation
-
-    private:
-      // method
-      virtual void setFrameType();
+      
       std::vector<int> p_constantFrames;  /**< Chain of Naif frame codes in constant
                                                rotation TC. The first entry will always
                                                be the target frame code*/
+      double p_timeBias;                  //!< iTime bias when reading kernels
+      Source p_source;                    //!< The source of the rotation data
+
+
+      // method
+      virtual void setFrameType();
       std::vector<int> p_timeFrames;      /**< Chain of Naif frame codes in time-based
                                                rotation CJ. The last entry will always
                                                be 1 (J2000 code)*/
-      double p_timeBias;                  //!< iTime bias when reading kernels
-
       double p_et;                           //!< Current ephemeris time
       Quaternion p_quaternion;            /**< Quaternion for J2000 to reference
                                                                   rotation at et*/
@@ -266,7 +252,6 @@ namespace Isis {
 
 
       FrameType m_frameType;  //!< The type of rotation frame
-      Source p_source;                    //!< The source of the rotation data
       int p_axisP;                        /**< The axis defined by the spacecraft
                                                vector for defining a nadir rotation*/
       int p_axisV;                        /**< The axis defined by the velocity
@@ -401,6 +386,21 @@ namespace Isis {
       static const double m_centScale;
       //! Seconds per day for scaling time in seconds to get target body w
       static const double m_dayScale;
+    
+      virtual void SetFullCacheParameters(double startTime, double endTime, int cacheSize);
+      virtual void setEphemerisTimeMemcache();
+      virtual void setEphemerisTimeNadir();
+      virtual void setEphemerisTimeSpice();
+      virtual void setEphemerisTimePolyFunction();
+      virtual void setEphemerisTimePolyFunctionOverSpice();
+      virtual void setEphemerisTimePckPolyFunction();
+      std::vector<double> p_cacheTime;  //!< iTime for corresponding rotation
+      std::vector<std::vector<double> > p_cache; /**< Cached rotations, stored as
+                                                      rotation matrix from J2000
+                                                      to 1st constant frame (CJ) or
+                                                      coefficients of polynomial
+                                                      fit to rotation angles.*/
+
   };
 };
 
