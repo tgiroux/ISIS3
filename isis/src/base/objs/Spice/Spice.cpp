@@ -43,6 +43,7 @@
 #include "ShapeModel.h"
 #include "SpacecraftPosition.h"
 #include "Target.h"
+#include "RotationFactory.h"
 
 using namespace std;
 
@@ -347,7 +348,7 @@ namespace Isis {
       m_sunPosition->LoadCache(t);
 
       Table t2("BodyRotation", lab.fileName(), lab);
-      m_bodyRotation->LoadCache(t2);
+      m_bodyRotation = (SpiceRotation*)RotationFactory::create(t2);
       if (t2.Label().hasKeyword("SolarLongitude")) {
         *m_solarLongitude = Longitude(t2.Label()["SolarLongitude"],
             Angle::Degrees);
@@ -381,7 +382,7 @@ namespace Isis {
     }
     else if (kernels["InstrumentPointing"][0].toUpper() == "TABLE") {
       Table t("InstrumentPointing", lab.fileName(), lab);
-      m_instrumentRotation->LoadCache(t);
+      m_instrumentRotation = (SpiceRotation*)RotationFactory::create(t);
     }
 
     if (kernels["InstrumentPosition"].size() == 0) {
@@ -608,15 +609,22 @@ namespace Isis {
     if (!m_bodyRotation->IsCached()) {
       int bodyRotationCacheSize = cacheSize;
       if (cacheSize > 2) bodyRotationCacheSize = 2;
+
+      m_bodyRotation = (SpiceRotation*)RotationFactory::toEphemerisRotation(m_bodyRotation, 
+          startTime.Et() - *m_startTimePadding,
+           endTime.Et() + *m_endTimePadding,
+          bodyRotationCacheSize);
+      /* 
       m_bodyRotation->LoadCache(
           startTime.Et() - *m_startTimePadding,
           endTime.Et() + *m_endTimePadding,
-          bodyRotationCacheSize);
+          bodyRotationCacheSize);*/
     }
 
     if (m_instrumentRotation->GetSource() < SpiceRotation::Memcache) {
       if (cacheSize > 3) m_instrumentRotation->MinimizeCache(SpiceRotation::Yes);
-      m_instrumentRotation->LoadCache(
+      
+      m_instrumentRotation = (SpiceRotation*)RotationFactory::toEphemerisRotation(m_instrumentRotation,
           startTime.Et() - *m_startTimePadding,
           endTime.Et() + *m_endTimePadding,
           cacheSize);
