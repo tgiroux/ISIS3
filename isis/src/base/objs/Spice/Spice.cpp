@@ -352,8 +352,8 @@ namespace Isis {
 
     vector<Distance> radius = m_target->radii();
     Distance targetRadius((radius[0] + radius[2])/2.0);
-    m_instrumentPosition = PositionFactory::spacecraftPosition(*m_spkCode, *m_spkBodyCode,
-                                                               ltState, targetRadius);
+    m_instrumentPosition = PositionFactory::positionSpacecraft(*m_spkCode, *m_spkBodyCode,
+                                                                ltState, targetRadius);
     m_sunPosition = PositionFactory::positionSpice(10, m_target->naifBodyCode());
 
     // Check to see if we have nadir pointing that needs to be computed &
@@ -373,7 +373,7 @@ namespace Isis {
       }
     }
     else if (m_usingAle) {
-      m_sunPosition->LoadCache(isd["SunPosition"]);
+      m_sunPosition = PositionFactory::loadCache(isd["SunPosition"]);
       m_bodyRotation->LoadCache(isd["BodyRotation"]);
       solarLongitude();
     }
@@ -416,10 +416,11 @@ namespace Isis {
 
     if (kernels["InstrumentPosition"][0].toUpper() == "TABLE") {
       Table t("InstrumentPosition", lab.fileName(), lab);
-      m_instrumentPosition->LoadCache(t);
+      m_instrumentPosition = PositionFactory::loadCache(t);
     }
     else if (m_usingAle) {
-      m_instrumentPosition->LoadCache(isd["InstrumentPosition"]);
+      m_instrumentPosition = PositionFactory::loadCache(isd["InstrumentPosition"]);
+      std::cout << "ALE Cache size: " << m_instrumentPosition->cacheSize() << '\n';
     }
 
     NaifStatus::CheckErrors();
@@ -649,11 +650,11 @@ namespace Isis {
           cacheSize);
     }
 
-    if (m_instrumentPosition->GetSource() < SpicePosition::Memcache) {
-      m_instrumentPosition->LoadCache(
-          startTime.Et() - *m_startTimePadding,
-          endTime.Et() + *m_endTimePadding,
-          cacheSize);
+    if (m_instrumentPosition->GetSource() < Position::Memcache) {
+      m_instrumentPosition = PositionFactory::fromSpiceToMemCache(m_instrumentPosition,
+                                                                  startTime.Et() - *m_startTimePadding,
+                                                                  endTime.Et() + *m_endTimePadding,
+                                                                  cacheSize);
       if (cacheSize > 3) m_instrumentPosition->Memcache2HermiteCache(tol);
     }
 
@@ -1492,7 +1493,7 @@ namespace Isis {
    * @internal
    *   @history 2011-02-09 Steven Lambright - Original version.
    */
-  SpicePosition *Spice::instrumentPosition() const {
+  Position *Spice::instrumentPosition() const {
     return m_instrumentPosition;
   }
 

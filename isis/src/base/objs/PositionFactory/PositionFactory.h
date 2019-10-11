@@ -3,6 +3,7 @@
 
 #include "Position.h"
 #include "PositionSpice.h"
+#include "PositionSpacecraft.h"
 #include "PositionMemCache.h"
 #include "SpicePosition.h"
 #include "SpacecraftPosition.h"
@@ -26,6 +27,8 @@ namespace Isis {
                               const Distance &radius);
 
       static Position* positionSpice(int targetCode, int observerCode);
+
+      static Position* positionSpacecraft(int targetCode, int observerCode, const LightTimeCorrectionState &ltState, const Distance &radius);
 
       static Position* fromSpiceToMemCache(Position *positionSpice, int time);
 

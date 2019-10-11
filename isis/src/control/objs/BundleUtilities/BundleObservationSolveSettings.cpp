@@ -216,7 +216,7 @@ namespace Isis {
     //     m_spkDegree = 2;
     //     m_spkSolveDegree = 2;
     //     m_solvePositionOverHermiteSpline = false;
-    //     m_positionInterpolationType = SpicePosition::PolyFunction;
+    //     m_positionInterpolationType = Position::PolyFunction;
     //     m_positionAprioriSigma.clear();
     setInstrumentPositionSettings(NoPositionFactors, 2, 2, false);
 
@@ -435,7 +435,7 @@ namespace Isis {
     }
 
     if (additionalPointingSigmas) {
-      for (int i=0;i < additionalPointingSigmas->count();i++) {         
+      for (int i=0;i < additionalPointingSigmas->count();i++) {
           m_anglesAprioriSigma.append(additionalPointingSigmas->value(i));
       }
     }
@@ -696,13 +696,13 @@ namespace Isis {
       }
     }
 
-    // Set the SpicePosition interpolation type enum appropriately
+    // Set the Position interpolation type enum appropriately
     m_solvePositionOverHermiteSpline = positionOverHermite;
     if (m_solvePositionOverHermiteSpline) {
-      m_positionInterpolationType = SpicePosition::PolyFunctionOverHermiteConstant;
+      m_positionInterpolationType = Position::PolyFunctionOverHermiteConstant;
     }
     else {
-      m_positionInterpolationType = SpicePosition::PolyFunction;
+      m_positionInterpolationType = Position::PolyFunction;
     }
 
   }
@@ -773,11 +773,11 @@ namespace Isis {
 
 
   /**
-   * Accesses the SpicePosition interpolation type for the spacecraft position
+   * Accesses the Position interpolation type for the spacecraft position
    *
-   * @return @b SpicePosition::Source Returns the SpicePositon interpolation type for position
+   * @return @b Position::Source Returns the SpicePositon interpolation type for position
    */
-  SpicePosition::Source BundleObservationSolveSettings::positionInterpolationType() const {
+  Position::Source BundleObservationSolveSettings::positionInterpolationType() const {
     return m_positionInterpolationType;
   }
 
@@ -974,7 +974,7 @@ namespace Isis {
         QString interpolationType = atts.value("interpolationType");
         if (!interpolationType.isEmpty()) {
           m_xmlHandlerObservationSettings->m_positionInterpolationType =
-              SpicePosition::Source(toInt(interpolationType));
+              Position::Source(toInt(interpolationType));
         }
       }
       else if (localName == "aprioriPositionSigmas") {

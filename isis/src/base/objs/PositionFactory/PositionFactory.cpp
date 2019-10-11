@@ -16,6 +16,10 @@ namespace Isis {
     return new PositionSpice(targetCode, observerCode);
   }
 
+  Position* PositionFactory::positionSpacecraft(int targetCode, int observerCode, const LightTimeCorrectionState &ltState, const Distance &radius) {
+    return new PositionSpacecraft(targetCode, observerCode, ltState, radius);
+  }
+
   Position* PositionFactory::fromSpiceToMemCache(Position *positionSpice, int time) {
     return fromSpiceToMemCache(positionSpice, time, time, 1);
   }
@@ -113,9 +117,8 @@ namespace Isis {
     }
 
     // positionMemCache->setHasVelocity(!p_cacheVelocity.empty());
-
     positionMemCache->SetEphemerisTime(positionMemCache->getCacheTime()[0]);
-
+    
     return positionMemCache;
   }
 

@@ -26,6 +26,7 @@
 
 #include "Camera.h"
 #include "CameraGroundMap.h"
+#include "Position.h"
 #include "SurfacePoint.h"
 
 namespace Isis {
@@ -79,33 +80,33 @@ namespace Isis {
    *  @history 2012-01-03 Janet Barrett - Got rid of call to SetLookDirection in the
    *                      SetFocalPlane method. The call to SetLookDirection was
    *                      duplicating the functionality of the SetFocalPlane method.
-   *  @history 2012-01-04 Janet Barrett - Added check for valid radius in the 
+   *  @history 2012-01-04 Janet Barrett - Added check for valid radius in the
    *                      SetGround method.
    *  @history 2012-01-27 Janet Barrett - The iterative algorithm in the SetFocalPlane
    *                      method was failing on some points when using the DEM shape
    *                      model. To fix this problem, I decreased the tolerance from 1E-8 to
    *                      1E-6 and increased the number of iterations from 30 to
    *                      100.
-   *  @history 2012-04-03 Janet Barrett - The iteration code was moved to its own method so 
-   *                      that it can be run multiple times if necessary. The first iteration 
-   *                      should suffice for those pixels that have shallow slopes. For those 
+   *  @history 2012-04-03 Janet Barrett - The iteration code was moved to its own method so
+   *                      that it can be run multiple times if necessary. The first iteration
+   *                      should suffice for those pixels that have shallow slopes. For those
    *                      pixels that lie on steep slopes (up to 2x the incidence angle), then
-   *                      an additional iteration call is needed. In the future, we may need to 
-   *                      add more calls to the iteration method if the slope is greater than 2x 
-   *                      the incidence angle. The slope variable will need to be halved each time 
-   *                      the iteration method is called until a solution is found. So, for example, 
-   *                      if we needed to call the iteration method a third time, the slope variable 
+   *                      an additional iteration call is needed. In the future, we may need to
+   *                      add more calls to the iteration method if the slope is greater than 2x
+   *                      the incidence angle. The slope variable will need to be halved each time
+   *                      the iteration method is called until a solution is found. So, for example,
+   *                      if we needed to call the iteration method a third time, the slope variable
    *                      would be set to .25.
    *  @history 2012-04-11 Janet Barrett - Removed call to SetLookDirection from the SetGround
    *                      method.
-   *  @history 2012-07-06 Debbie A. Cook, Updated Spice members to be more compliant with Isis 
+   *  @history 2012-07-06 Debbie A. Cook, Updated Spice members to be more compliant with Isis
    *                      coding standards. References #972.
-   * @history 2013-02-11 Debbie A. Cook, Fixed SetGround method by adding call to set the surface point 
+   * @history 2013-02-11 Debbie A. Cook, Fixed SetGround method by adding call to set the surface point
    *                       in the ShapeModel so that photometric angles can be calculated.  References #775
-   * @history 2016-07-19 Kristin Berry, Updated SetGround to call p_camera->Sensor::SetGround so that 
-   *                       RA, DEC values will be set on level 2 images. References #2400.  
-   *  @history 2019-05-15 Debbie A. Cook - Added optional bool argument to match parent GetXY 
-   *                          method to allow the bundle adjustment to skip the back of planet test during 
+   * @history 2016-07-19 Kristin Berry, Updated SetGround to call p_camera->Sensor::SetGround so that
+   *                       RA, DEC values will be set on level 2 images. References #2400.
+   *  @history 2019-05-15 Debbie A. Cook - Added optional bool argument to match parent GetXY
+   *                          method to allow the bundle adjustment to skip the back of planet test during
    *                          iterations. References #2591.
    */
   class RadarGroundMap : public CameraGroundMap {
@@ -121,7 +122,7 @@ namespace Isis {
       virtual bool SetGround(const SurfacePoint &surfacePoint);
       virtual bool GetXY(const SurfacePoint &spoint, double *cudx,
                          double *cudy, bool test=false);
-      virtual bool GetdXYdPosition(const SpicePosition::PartialType varType,
+      virtual bool GetdXYdPosition(const Position::PartialType varType,
                                    int coefIndex, double *cudx, double *cudy);
       virtual bool GetdXYdPoint(std::vector<double> d_lookB, double *dx,
                                 double *dy);

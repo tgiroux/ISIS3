@@ -38,6 +38,7 @@
 #include "IException.h"
 #include "IString.h"
 #include "NaifStatus.h"
+#include "Position.h"
 #include "SpkSegment.h"
 #include "Table.h"
 
@@ -121,7 +122,7 @@ void SpkSegment::import(Cube &cube) {
     getStates(*camera, load(spkCache), m_states, m_epochs, m_hasVV);
 
     // Save current time
-    SpicePosition *ipos(camera->instrumentPosition());
+    Position *ipos(camera->instrumentPosition());
     double currentTime = ipos->EphemerisTime();
 
     // Add records with 3 milliseconds padding to top and bottom of records
@@ -259,7 +260,7 @@ void SpkSegment::getStates(Camera &camera, const SMatrix &spice,
  * @history 2011-06-03 Debbie A. Cook Put extrapolation code back
  *                                    in use since it gives the best results.
  */
-SpkSegment::SVector SpkSegment::makeState(SpicePosition *position, const double &time0,
+SpkSegment::SVector SpkSegment::makeState(Position *position, const double &time0,
                                           const SVector &state0, const double &timeT) const {
 
 

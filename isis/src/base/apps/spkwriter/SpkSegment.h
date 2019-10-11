@@ -122,7 +122,7 @@ class SpkSegment : public SpkSpiceSegment {
     SMatrix load(Table &cache);
     void getStates(Camera &camera, const SMatrix &spice, SMatrix &states,
                    SVector &epochs, bool &hasVV) const;
-    SVector makeState(SpicePosition *position, const double &time0,
+    SVector makeState(Position *position, const double &time0,
                       const SVector &stateT, const double &timeT) const;
     void validateType(const int spktype) const;
 };

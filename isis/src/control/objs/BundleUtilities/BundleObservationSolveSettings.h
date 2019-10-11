@@ -27,7 +27,7 @@
 #include <QSet>
 #include <QString>
 
-#include "SpicePosition.h"
+#include "Position.h"
 #include "SpiceRotation.h"
 #include "XmlStackedHandler.h"
 
@@ -171,7 +171,7 @@ class BundleObservationSolveSettings {
       int numberCameraPositionCoefficientsSolved() const;
       bool solvePositionOverHermite() const;
       QList<double> aprioriPositionSigmas() const;
-      SpicePosition::Source positionInterpolationType() const;
+      Position::Source positionInterpolationType() const;
 
       // TODO: does xml stuff need project???
       void save(QXmlStreamWriter &stream, const Project *project) const;
@@ -255,9 +255,9 @@ class BundleObservationSolveSettings {
                                                   size of the list is equal to the number of
                                                   coefficients in the solution. An Isis:Null value
                                                   implies no weighting will be applied.*/
-      SpicePosition::Source
-          m_positionInterpolationType;      /**< SpicePosition interpolation types.
-                                                 Defined in SpicePosition.cpp, these types are:
+      Position::Source
+          m_positionInterpolationType;      /**< Position interpolation types.
+                                                 Defined in Position.cpp, these types are:
                                                  1) Spice: read directly from kernels,
                                                  2) Memcache: read from cached table,
                                                  3) HermiteCache: read from splined table,

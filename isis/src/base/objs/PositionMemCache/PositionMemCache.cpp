@@ -4,7 +4,9 @@ namespace Isis {
 
   PositionMemCache::PositionMemCache(int targetCode, int observerCode) : Position(targetCode, observerCode) {}
 
-  PositionMemCache::PositionMemCache() {}
+  PositionMemCache::PositionMemCache() {
+    p_source = Position::Memcache;
+  }
 
   PositionMemCache::~PositionMemCache() {
     ClearCache();

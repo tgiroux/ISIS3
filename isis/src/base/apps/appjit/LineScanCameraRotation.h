@@ -33,7 +33,7 @@
 #include "PolynomialUnivariate.h"
 #include "Quaternion.h"
 #include "Spice.h"
-#include "SpicePosition.h"
+#include "Position.h"
 #include "SpiceRotation.h"
 #include "Table.h"
 
@@ -97,7 +97,7 @@ namespace Isis {
    *  @history 2010-12-23  Debbie A. Cook Added new method to return InstrumentPointing keyword
    *                        value from kernels group in label and added this value as a class
    *                        member.
-   *  @history 2012-07-06 Debbie A. Cook, Updated Spice members to be more compliant with Isis 
+   *  @history 2012-07-06 Debbie A. Cook, Updated Spice members to be more compliant with Isis
    *                          coding standards. References #972.
    */
   class LineScanCameraRotation : public Isis::SpiceRotation {
@@ -131,7 +131,7 @@ namespace Isis {
     private:
       Isis::Spice *p_spi;
       SpiceRotation *p_crot;                              //!< Camera rotation [CJ]
-      SpicePosition *p_spos;                              //!< Spacecraft position in J2000
+      Position *p_spos;                              //!< Spacecraft position in J2000
       SpiceRotation *p_prot;                              //!< Planet rotation [PJ]
       std::vector<std::vector<double> > p_cacheIB;        //!< Cached rotations body-fixed to ICR
       PixelOffset *p_jitter;                              //!< Jitter rotations from nominal camera to truth (jittering camera)
@@ -143,4 +143,3 @@ namespace Isis {
 };
 
 #endif
-

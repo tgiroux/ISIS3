@@ -30,7 +30,7 @@
 
 #include "Pvl.h"
 #include "ShapeModel.h"
-#include "SpicePosition.h"
+#include "Position.h"
 #include "SpiceRotation.h"
 #include "PositionFactory.h"
 
@@ -332,7 +332,7 @@ namespace Isis {
       QString getString(const QString &key,     int index = 0);
 
       Position *sunPosition() const;
-      SpicePosition *instrumentPosition() const;
+      Position *instrumentPosition() const;
       SpiceRotation *bodyRotation() const;
       SpiceRotation *instrumentRotation() const;
 
@@ -412,7 +412,7 @@ namespace Isis {
       SpiceDouble *m_startTimePadding; //!< Kernels pvl group StartPadding keyword value
       SpiceDouble *m_endTimePadding; //!< Kernels pvl group EndPadding keyword value
 
-      SpicePosition *m_instrumentPosition; //!< Instrument spice position
+      Position *m_instrumentPosition; //!< Instrument spice position
       SpiceRotation *m_instrumentRotation; //!< Instrument spice rotation
       Position *m_sunPosition; //!< Sun spice position
       SpiceRotation *m_bodyRotation; //!< Body spice rotation

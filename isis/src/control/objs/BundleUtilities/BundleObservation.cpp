@@ -10,7 +10,7 @@
 #include "BundleTargetBody.h"
 #include "Camera.h"
 #include "LinearAlgebra.h"
-#include "SpicePosition.h"
+#include "Position.h"
 #include "SpiceRotation.h"
 
 using namespace std;
@@ -258,9 +258,9 @@ namespace Isis {
   /**
    * Accesses the instrument's spice position
    *
-   * @return @b SpicePosition* Returns the SpicePosition for this observation
+   * @return @b Position* Returns the Position for this observation
    */
-  SpicePosition *BundleObservation::spicePosition() {
+  Position *BundleObservation::spicePosition() {
     return m_instrumentPosition;
   }
 
@@ -344,7 +344,7 @@ namespace Isis {
 
       for (int i = 0; i < size(); i++) {
         BundleImageQsp image = at(i);
-        SpicePosition *spicePosition = image->camera()->instrumentPosition();
+        Position *spicePosition = image->camera()->instrumentPosition();
 
         if (i > 0) {
           spicePosition->SetPolynomialDegree(m_solveSettings->spkSolveDegree());
@@ -662,7 +662,7 @@ namespace Isis {
         // apply updates to all images in observation
         for (int i = 0; i < size(); i++) {
           BundleImageQsp image = at(i);
-          SpicePosition *spiceposition = image->camera()->instrumentPosition();
+          Position *spiceposition = image->camera()->instrumentPosition();
           spiceposition->SetPolynomial(coefX, coefY, coefZ,
                                        m_solveSettings->positionInterpolationType());
         }

@@ -62,7 +62,7 @@ namespace Isis {
                                      double uz) {
 
     SpiceRotation *bodyFrame = p_camera->bodyRotation();
-    SpicePosition *spaceCraft = p_camera->instrumentPosition();
+    Position *spaceCraft = p_camera->instrumentPosition();
 
     // Get spacecraft position and velocity to create a state vector
     std::vector<double> Ssc(6);
@@ -196,13 +196,13 @@ namespace Isis {
       } else {
         R = p_camera->LocalRadius(rlat, rlon).kilometers();
       }
-      
+
       iter++;
     }
     while(fabs(R - lastR) > p_tolerance && iter < 100);
 
     if(fabs(R - lastR) > p_tolerance) return false;
- 
+
     return true;
   }
 
@@ -293,7 +293,7 @@ namespace Isis {
       // See if we are done
       if((fabs(delTime) <= p_timeTolerance) || (fGuess == 0.0)) {
         SpiceRotation *bodyFrame = p_camera->bodyRotation();
-        SpicePosition *spaceCraft = p_camera->instrumentPosition();
+        Position *spaceCraft = p_camera->instrumentPosition();
 
         // Get body fixed spacecraft velocity and position
         std::vector<double> Ssc(6);
@@ -366,8 +366,8 @@ namespace Isis {
    * without resetting the current point values for lat/lon/radius/x/y and
    * related radar parameter p_slantRange.
    *
-   *  @history 2019-05-15 Debbie A. Cook - Added optional bool argument to match parent GetXY 
-   *                          method to allow the bundle adjustment to skip the back of planet test during 
+   *  @history 2019-05-15 Debbie A. Cook - Added optional bool argument to match parent GetXY
+   *                          method to allow the bundle adjustment to skip the back of planet test during
    *                          iterations. References #2591.
    *
    * @param spoint
@@ -385,7 +385,7 @@ namespace Isis {
 
     // Compute body-fixed look vector
     SpiceRotation *bodyFrame = p_camera->bodyRotation();
-    SpicePosition *spaceCraft = p_camera->instrumentPosition();
+    Position *spaceCraft = p_camera->instrumentPosition();
 
     std::vector<double> sJ(6);   // Spacecraft state vector (position and velocity) in J2000 frame
     // Load the state into sJ
@@ -423,7 +423,7 @@ namespace Isis {
     // Get the spacecraft position (Xsc) and velocity (Vsc) in body fixed
     // coordinates
     SpiceRotation *bodyFrame = p_camera->bodyRotation();
-    SpicePosition *spaceCraft = p_camera->instrumentPosition();
+    Position *spaceCraft = p_camera->instrumentPosition();
 
     // Load the state into Ssc
     std::vector<double> Ssc(6);
@@ -474,9 +474,9 @@ namespace Isis {
   // Add the partial for the x coordinate of the position (differentiating
   // point(x,y,z) - spacecraftPosition(x,y,z) in body-fixed and the velocity
   // Load the derivative of the state into d_lookJ
-  bool RadarGroundMap::GetdXYdPosition(const SpicePosition::PartialType varType, int coefIndex,
+  bool RadarGroundMap::GetdXYdPosition(const Position::PartialType varType, int coefIndex,
                                        double *dx, double *dy) {
-    SpicePosition *instPos = p_camera->instrumentPosition();
+    Position *instPos = p_camera->instrumentPosition();
     SpiceRotation *bodyRot = p_camera->bodyRotation();
 
     std::vector <double> d_lookJ(6);

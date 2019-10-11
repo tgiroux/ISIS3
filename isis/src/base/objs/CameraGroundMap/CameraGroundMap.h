@@ -26,11 +26,11 @@
 
 #include "Camera.h"
 #include "CameraDistortionMap.h"
-#include "SpicePosition.h"
+#include "Position.h"
 #include "SurfacePoint.h"
 
 namespace Isis {
-  /** 
+  /**
    * Convert between undistorted focal plane and ground coordinates
    *
    * This base class is used to convert between undistorted focal plane
@@ -52,13 +52,13 @@ namespace Isis {
    *                          between the SetGround methods
    *  @history 2008-07-14 Steven Lambright Added NaifStatus calls
    *  @history 2009-10-14 Debbie A. Cook Added new virtual method GetXY(lat,lon,radius, lookJ)
-   *  @history 2009-11-27 Debbie A. Cook Modified virtual method 
+   *  @history 2009-11-27 Debbie A. Cook Modified virtual method
    *                          GetXY(lat,lon,radius,lookJ,cudx,cudy)
    *  @history 2010-03-19 Debbie A. Cook Modified virtual method to return cudx and cudy; added
-   *                          methods GetdXYdPosition, GetdXYdOrientation, GetdXYdPoint, 
-   *                          PointPartial, and DQuotient; and added members PartialType 
+   *                          methods GetdXYdPosition, GetdXYdOrientation, GetdXYdPoint,
+   *                          PointPartial, and DQuotient; and added members PartialType
    *                          (from BundleAdjust) and p_lookJ.
-   *  @history 2010-08-05 Debbie A. Cook Added another version of GetXY to support changes from 
+   *  @history 2010-08-05 Debbie A. Cook Added another version of GetXY to support changes from
    *                          binary control net upgrade
    *  @history 2010-11-22 Debbie A. Cook Moved PointPartial call out of GetdXYdPoint
    *                          to allow BundleAdjust to avoid multiple calls for
@@ -68,23 +68,23 @@ namespace Isis {
    *  @history 2011-02-09 Steven Lambright SetGround now uses the Latitude,
    *                          Longitude and SurfacePoint classes.
    *  @history 2011-03-18 Debbie A. Cook Added reference to surface point in GetXY
-   *  @history 2012-07-06 Debbie A. Cook Updated Spice members to be more 
+   *  @history 2012-07-06 Debbie A. Cook Updated Spice members to be more
    *                          compliant with Isis coding standards. References #972.
    *  @history 2012-10-10 Debbie A. Cook Modified to use new Target class.
    *                          References Mantis ticket #775 and #1114.
-   *  @history 2013-02-22 Debbie A. Cook Fixed LookCtoFocalPlaneXY method 
-   *                          to properly handle instruments with a look direction along 
+   *  @history 2013-02-22 Debbie A. Cook Fixed LookCtoFocalPlaneXY method
+   *                          to properly handle instruments with a look direction along
    *                          the negative z axis.  Fixes Mantis ticket #1524
    *  @history 2014-04-17 Jeannie Backer - Replaced local variable names with more
    *                          descriptive names. References #1659.
-   *  @history 2015-07-24 Debbie A. Cook - Added new methods GetdXYdTOrientation(), 
+   *  @history 2015-07-24 Debbie A. Cook - Added new methods GetdXYdTOrientation(),
    *                          EllipsoidPartial() and MeanRadiusPartial() along with new member
    *                          p_pB. References Mantis ticket TBD.
    *  @history 2016-06-27 Ian Humphrey - Updated documentation and coding standards. Fixes #3971.
    *  @history 2017-08-30 Summer Stapleton - Updated documentation. References #4807.
-   *  @history 2019-04-15 Debbie A. Cook - Added optional bool argument to main GetXY method to 
-   *                          allow the bundle adjustment to skip the back of planet test during iterations. 
-   *                          Also changed the name of the angle variable to cosangle to be more 
+   *  @history 2019-04-15 Debbie A. Cook - Added optional bool argument to main GetXY method to
+   *                          allow the bundle adjustment to skip the back of planet test during iterations.
+   *                          Also changed the name of the angle variable to cosangle to be more
    *                          descriptive. References #2591.
    */
   class CameraGroundMap {
@@ -99,7 +99,7 @@ namespace Isis {
 
       /**
        * Radius axes types to use when computing partials. When computing partials, this enum
-       * represents the "with respect to" variable in the computation. 
+       * represents the "with respect to" variable in the computation.
        */
       enum PartialType {
         WRT_Latitude,
@@ -112,11 +112,11 @@ namespace Isis {
 
       virtual bool SetGround(const Latitude &lat, const Longitude &lon);
       virtual bool SetGround(const SurfacePoint &surfacePoint);
-      virtual bool GetXY(const SurfacePoint &spoint, double *cudx, 
+      virtual bool GetXY(const SurfacePoint &spoint, double *cudx,
                        double *cudy, bool test=true);
       virtual bool GetXY(const double lat, const double lon,
                          const double radius, double *cudx, double *cudy);
-      virtual bool GetdXYdPosition(const SpicePosition::PartialType varType,
+      virtual bool GetdXYdPosition(const Position::PartialType varType,
                                    int coefIndex,
                                    double *cudx, double *cudy);
       virtual bool GetdXYdOrientation(const SpiceRotation::PartialType varType,
