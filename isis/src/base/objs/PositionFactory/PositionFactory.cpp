@@ -55,6 +55,17 @@ namespace Isis {
     // Load the full cache time information from the label if available
     PositionMemCache* positionMemCache = new PositionMemCache();
 
+    // Load the full cache time information from the label if available
+    if(table.Label().hasKeyword("SpkTableStartTime")) {
+      positionMemCache->setStartTime(toDouble(table.Label().findKeyword("SpkTableStartTime")[0]));
+    }
+    if(table.Label().hasKeyword("SpkTableEndTime")) {
+      positionMemCache->setEndTime(toDouble(table.Label().findKeyword("SpkTableEndTime")[0]));
+    }
+    if(table.Label().hasKeyword("SpkTableOriginalSize")) {
+      positionMemCache->SetCacheSize(toDouble(table.Label().findKeyword("SpkTableOriginalSize")[0]));
+    }
+
     for (int r = 0; r < positionEphemerids.Records(); r++) {
       TableRecord &rec = positionEphemerids[r];
       if (rec.Fields() == 7) {
@@ -96,9 +107,9 @@ namespace Isis {
     PositionMemCache* positionMemCache = new PositionMemCache();
 
     // Load the full cache time information from the label if available
-    // p_fullCacheStartTime = isdPos["SpkTableStartTime"].get<double>();
-    // p_fullCacheEndTime = isdPos["SpkTableEndTime"].get<double>();
-    // p_fullCacheSize = isdPos["SpkTableOriginalSize"].get<double>();
+    positionMemCache->setStartTime(isdPos["SpkTableStartTime"].get<double>());
+    positionMemCache->setEndTime(isdPos["SpkTableEndTime"].get<double>());
+    positionMemCache->setSize(isdPos["SpkTableOriginalSize"].get<double>());
     positionMemCache->setCacheTime(isdPos["EphemerisTimes"].get<std::vector<double>>());
 
     for (auto it = isdPos["Positions"].begin(); it != isdPos["Positions"].end(); it++) {
@@ -116,9 +127,8 @@ namespace Isis {
       }
     }
 
-    // positionMemCache->setHasVelocity(!p_cacheVelocity.empty());
     positionMemCache->SetEphemerisTime(positionMemCache->getCacheTime()[0]);
-    
+
     return positionMemCache;
   }
 
