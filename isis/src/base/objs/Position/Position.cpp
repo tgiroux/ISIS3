@@ -425,7 +425,7 @@ namespace Isis {
     }
     else if(table.Label().findKeyword("CacheType")[0] == "HermiteSpline") {
       p_source = HermiteCache;
-      p_overrideTimeScale = 1.;
+      p_overrideTimeScale = 1.0;
       p_override = ScaleOnly;
     }
     else if(table.Label().findKeyword("CacheType")[0] == "PolyFunction") {
@@ -1321,7 +1321,7 @@ namespace Isis {
     // On the first SetEphemerisTime, create our splines. Later calls should
     // reuse these splines.
     if(p_xhermite == NULL) {
-      p_overrideTimeScale = 1.;
+      p_overrideTimeScale = 1.0;
       p_override = ScaleOnly;
       ComputeBaseTime();
 
@@ -1524,7 +1524,7 @@ namespace Isis {
     }
 
     // make sure base time is set before it is needed
-    p_overrideTimeScale = 1.;
+    p_overrideTimeScale = 1.0;
     p_override = ScaleOnly;
     ComputeBaseTime();
 
@@ -1574,7 +1574,6 @@ namespace Isis {
    *            error in loop.
    */
   std::vector<int> Position::HermiteIndices(double tolerance, std::vector <int> indexList) {
-
     unsigned int n = indexList.size();
     double sTime;
 

@@ -14,6 +14,8 @@ namespace Isis {
 
   void PositionMemCache::SetEphemerisTime(double et) {
     // If the cache has only one position return it
+    p_et = et;
+    
     if(p_cache.size() == 1) {
       p_coordinate[0] = p_cache[0][0];
       p_coordinate[1] = p_cache[0][1];
