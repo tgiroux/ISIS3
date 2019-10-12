@@ -425,7 +425,7 @@ namespace Isis {
     p_cache.clear();
     p_cacheTime.clear();
     p_cacheAv.clear();
-    p_hasAngularVelocity = false;
+    p_hasAngularVelocity = true;
     m_frameType = CK;
 
     // Load the full cache time information from the label if available
@@ -440,6 +440,11 @@ namespace Isis {
         Quaternion q(quat);
         std::vector<double> CJ = q.ToMatrix();
         p_cache.push_back(CJ);
+    }
+
+    for (auto it = isdRot["AngularVelocity"].begin(); it != isdRot["AngularVelocity"].end(); it++) {
+        std::vector<double> av = {it->at(0).get<double>(), it->at(1).get<double>(), it->at(2).get<double>()};
+        p_cacheAv.push_back(av);
     }
 
     bool hasConstantFrames = isdRot.find("ConstantFrames") != isdRot.end();
