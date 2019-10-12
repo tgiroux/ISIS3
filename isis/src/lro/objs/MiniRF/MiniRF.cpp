@@ -50,7 +50,7 @@ namespace Isis {
    *          value to pass into Spice::CreateCache() method.
    */
   MiniRF::MiniRF(Isis::Cube &cube) : Isis::RadarCamera(cube) {
-    
+
     // LRO MiniRF naif instrument code = -85700
     if (naifIkCode() == -85700) {
       m_instrumentNameLong = "Miniature Radio Frequency";
@@ -159,7 +159,7 @@ namespace Isis {
     Spice::createCache(etStart, etEnd, this->ParentLines() + 1, tol);
     setTime(etMid);
     SpiceRotation *bodyFrame = this->bodyRotation();
-    SpicePosition *spaceCraft = this->instrumentPosition();
+    Position *spaceCraft = this->instrumentPosition();
 
     SpiceDouble Ssc[6];
     // Load the state into Ssc

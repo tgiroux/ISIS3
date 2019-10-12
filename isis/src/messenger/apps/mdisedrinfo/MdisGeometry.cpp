@@ -414,7 +414,7 @@ namespace Isis {
     // Get sc_target_position_vector and target_center_distance for all targets
     // except Sky
     if (!_camera->target()->isSky()) {
-      SpicePosition *scpos = _camera->instrumentPosition();
+      Position *scpos = _camera->instrumentPosition();
       std::vector<double> jVec;
       jVec = scpos->Coordinate();
       geom += format("SC_TARGET_POSITION_VECTOR", jVec, "KM");
@@ -928,7 +928,7 @@ namespace Isis {
     std::vector<double> jVec = sunpos->Coordinate();
 
     //  J2000 spacecraft to sun reference
-    SpicePosition *campos = _camera->instrumentPosition();
+    Position *campos = _camera->instrumentPosition();
     std::vector<double> sVec = campos->Coordinate();
 
     //  Subtract target-sun vector from sc-sun vector and normalize to get

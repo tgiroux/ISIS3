@@ -56,14 +56,14 @@ namespace Isis {
     PositionMemCache* positionMemCache = new PositionMemCache();
 
     // Load the full cache time information from the label if available
-    if(table.Label().hasKeyword("SpkTableStartTime")) {
-      positionMemCache->setStartTime(toDouble(table.Label().findKeyword("SpkTableStartTime")[0]));
+    if(positionEphemerids.Label().hasKeyword("SpkTableStartTime")) {
+      positionMemCache->setStartTime(toDouble(positionEphemerids.Label().findKeyword("SpkTableStartTime")[0]));
     }
-    if(table.Label().hasKeyword("SpkTableEndTime")) {
-      positionMemCache->setEndTime(toDouble(table.Label().findKeyword("SpkTableEndTime")[0]));
+    if(positionEphemerids.Label().hasKeyword("SpkTableEndTime")) {
+      positionMemCache->setEndTime(toDouble(positionEphemerids.Label().findKeyword("SpkTableEndTime")[0]));
     }
-    if(table.Label().hasKeyword("SpkTableOriginalSize")) {
-      positionMemCache->SetCacheSize(toDouble(table.Label().findKeyword("SpkTableOriginalSize")[0]));
+    if(positionEphemerids.Label().hasKeyword("SpkTableOriginalSize")) {
+      positionMemCache->setSize(toDouble(positionEphemerids.Label().findKeyword("SpkTableOriginalSize")[0]));
     }
 
     for (int r = 0; r < positionEphemerids.Records(); r++) {
