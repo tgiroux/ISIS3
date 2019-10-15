@@ -118,8 +118,8 @@ namespace Isis {
     double *velocity;
     std::vector<double> IB(9);
     std::vector<double> CI(9);
-    SpiceRotation *prot = p_spi->bodyRotation();
-    SpiceRotation *crot = p_spi->instrumentRotation();
+    Rotation *prot = p_spi->bodyRotation();
+    Rotation *crot = p_spi->instrumentRotation();
 
     for(std::vector<double>::iterator i = p_cacheTime.begin(); i < p_cacheTime.end(); i++) {
       double et = *i;
@@ -214,7 +214,7 @@ namespace Isis {
     double CI[3][3];
     double IJ[3][3];
     double rtime;
-    SpiceRotation *prot = p_spi->bodyRotation();
+    Rotation *prot = p_spi->bodyRotation();
     std::vector<double> CJ;
     CJ.resize(9);
 

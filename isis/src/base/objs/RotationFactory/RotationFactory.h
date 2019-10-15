@@ -30,7 +30,7 @@ namespace Isis {
   class RotationFactory {
     public:
       static Rotation* toClassicRotation(EphemerisRotation* rotation);
-      static EphemerisRotation* toEphemerisRotation(SpiceRotation* rotation, double startTime, double endTime, int cacheSize);
+      static Rotation* toEphemerisRotation(SpiceRotation* rotation, double startTime, double endTime, int cacheSize);
       static Rotation* create(json &isdRotation);
       static Rotation* create(double time);
       static Rotation* create(int frameCode);

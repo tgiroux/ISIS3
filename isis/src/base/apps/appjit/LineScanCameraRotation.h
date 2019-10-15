@@ -130,9 +130,9 @@ namespace Isis {
 
     private:
       Isis::Spice *p_spi;
-      SpiceRotation *p_crot;                              //!< Camera rotation [CJ]
+      Rotation *p_crot;                              //!< Camera rotation [CJ]
       SpicePosition *p_spos;                              //!< Spacecraft position in J2000
-      SpiceRotation *p_prot;                              //!< Planet rotation [PJ]
+      Rotation *p_prot;                              //!< Planet rotation [PJ]
       std::vector<std::vector<double> > p_cacheIB;        //!< Cached rotations body-fixed to ICR
       PixelOffset *p_jitter;                              //!< Jitter rotations from nominal camera to truth (jittering camera)
       bool p_cachesLoaded;                                //!< Flag indicated p_cache and p_cacheIB are loaded

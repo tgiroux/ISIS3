@@ -250,7 +250,7 @@ namespace Isis {
    *
    * @return @b SpiceRotation* Returns the SpiceRotation for this observation
    */
-  SpiceRotation *BundleObservation::spiceRotation() {
+  Rotation *BundleObservation::spiceRotation() {
     return m_instrumentRotation;
   }
 
@@ -382,7 +382,7 @@ namespace Isis {
 
       for (int i = 0; i < size(); i++) {
         BundleImageQsp image = at(i);
-        SpiceRotation *spicerotation = image->camera()->instrumentRotation();
+        Rotation *spicerotation = image->camera()->instrumentRotation();
 
         if (i > 0) {
           spicerotation->SetPolynomialDegree(m_solveSettings->ckSolveDegree());
@@ -708,7 +708,7 @@ namespace Isis {
         // apply updates to all images in observation
         for (int i = 0; i < size(); i++) {
           BundleImageQsp image = at(i);
-          SpiceRotation *spiceRotation = image->camera()->instrumentRotation();
+          Rotation *spiceRotation = image->camera()->instrumentRotation();
           spiceRotation->SetPolynomial(coefRA, coefDEC, coefTWI,
                                        m_solveSettings->pointingInterpolationType());
         }

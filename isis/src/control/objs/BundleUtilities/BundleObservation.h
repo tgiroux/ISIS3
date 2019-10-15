@@ -34,7 +34,7 @@
 namespace Isis {
   class BundleObservationSolveSettings;
   class SpicePosition;
-  class SpiceRotation;
+  class Rotation;
 
   /**
    * @brief Class for bundle observations
@@ -132,7 +132,7 @@ namespace Isis {
 
       QString instrumentId();
 
-      SpiceRotation *spiceRotation();
+      Rotation *spiceRotation();
       SpicePosition *spicePosition();
 
       LinearAlgebra::Vector &parameterWeights();
@@ -181,7 +181,7 @@ namespace Isis {
 
       BundleObservationSolveSettingsQsp m_solveSettings; //!< Solve settings for this observation.
 
-      SpiceRotation *m_instrumentRotation;   //!< Instrument spice rotation (in primary image).
+      Rotation *m_instrumentRotation;   //!< Instrument spice rotation (in primary image).
       SpicePosition *m_instrumentPosition;   //!< Instrument spice position (in primary image).
 //    SpiceRotation *m_bodyRotation;         //!< Instrument body rotation (in primary image).
 

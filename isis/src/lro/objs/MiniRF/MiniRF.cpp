@@ -158,7 +158,7 @@ namespace Isis {
     }
     Spice::createCache(etStart, etEnd, this->ParentLines() + 1, tol);
     setTime(etMid);
-    SpiceRotation *bodyFrame = this->bodyRotation();
+    Rotation *bodyFrame = this->bodyRotation();
     SpicePosition *spaceCraft = this->instrumentPosition();
 
     SpiceDouble Ssc[6];

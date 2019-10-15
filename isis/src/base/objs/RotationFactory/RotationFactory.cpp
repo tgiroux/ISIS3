@@ -11,7 +11,7 @@ Rotation* RotationFactory::toClassicRotation(EphemerisRotation* rotation) {
   return (Rotation*)rotation; 
 }
 
-EphemerisRotation* RotationFactory::toEphemerisRotation(SpiceRotation* rotation, double startTime, double endTime, int cacheSize) { 
+Rotation* RotationFactory::toEphemerisRotation(SpiceRotation* rotation, double startTime, double endTime, int cacheSize) { 
     // Check for valid arguments
     if (cacheSize <= 0) {
       QString msg = "Argument cacheSize must not be less or equal to zero";
@@ -65,8 +65,8 @@ EphemerisRotation* RotationFactory::toEphemerisRotation(SpiceRotation* rotation,
       rotation->LoadTimeCache();
     }
     std::cout << "Finished conversion" << std::endl; 
-    // explicit cast
-    return (EphemerisRotation*)rotation;
+
+    return rotation;
 } 
 
 

@@ -223,7 +223,7 @@ namespace Isis {
   
     Camera *mycam = ( !camera ) ? cube.camera() : camera;
 
-    SpiceRotation *body = mycam->bodyRotation();
+    Rotation *body = mycam->bodyRotation();
     Quaternion j2000ToTarget(body->Matrix());
 
     // Get body-fixed s/c vector - points from body to s/c

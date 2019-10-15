@@ -180,7 +180,7 @@ namespace Isis {
         json props;
         props["kernels"] = kernel_pvl.str();
 
-        isd = ale::load(cube.fileName().toStdString(), props.dump(), "isis");
+        isd = ale::load(cube.fileName().toStdString(), props.dump(), "isis", true);
         json aleNaifKeywords = isd["NaifKeywords"];
         m_naifKeywords = new PvlObject("NaifKeywords", aleNaifKeywords);
         
@@ -366,7 +366,7 @@ namespace Isis {
       m_sunPosition->LoadCache(t);
 
       Table t2("BodyRotation", lab.fileName(), lab);
-      m_bodyRotation = (SpiceRotation*)RotationFactory::create(t2);
+      m_bodyRotation = RotationFactory::create(t2);
       if (t2.Label().hasKeyword("SolarLongitude")) {
         *m_solarLongitude = Longitude(t2.Label()["SolarLongitude"],
             Angle::Degrees);
@@ -405,7 +405,7 @@ namespace Isis {
     }
     else if (kernels["InstrumentPointing"][0].toUpper() == "TABLE") {
       Table t("InstrumentPointing", lab.fileName(), lab);
-      m_instrumentRotation = (SpiceRotation*)RotationFactory::create(t);
+      m_instrumentRotation = RotationFactory::create(t);
     }
     else if (m_usingAle) {
      m_instrumentRotation->LoadCache(isd["InstrumentPointing"]);
@@ -639,7 +639,7 @@ namespace Isis {
       int bodyRotationCacheSize = cacheSize;
       if (cacheSize > 2) bodyRotationCacheSize = 2;
 
-      m_bodyRotation = (SpiceRotation*)RotationFactory::toEphemerisRotation(m_bodyRotation, 
+      m_bodyRotation = RotationFactory::toEphemerisRotation((SpiceRotation*)m_bodyRotation, 
           startTime.Et() - *m_startTimePadding,
            endTime.Et() + *m_endTimePadding,
           bodyRotationCacheSize);
@@ -653,7 +653,7 @@ namespace Isis {
     if (m_instrumentRotation->GetSource() < SpiceRotation::Memcache) {
       if (cacheSize > 3) m_instrumentRotation->MinimizeCache(SpiceRotation::Yes);
       
-      m_instrumentRotation = (SpiceRotation*)RotationFactory::toEphemerisRotation(m_instrumentRotation,
+      m_instrumentRotation = RotationFactory::toEphemerisRotation((SpiceRotation*) m_instrumentRotation,
           startTime.Et() - *m_startTimePadding,
           endTime.Et() + *m_endTimePadding,
           cacheSize);
@@ -1513,7 +1513,7 @@ namespace Isis {
    * @internal
    *   @history 2011-02-09 Steven Lambright - Original version.
    */
-  SpiceRotation *Spice::bodyRotation() const {
+  Rotation *Spice::bodyRotation() const {
     return m_bodyRotation;
   }
 
@@ -1524,7 +1524,7 @@ namespace Isis {
    * @internal
    *   @history 2011-02-09 Steven Lambright - Original version.
    */
-  SpiceRotation *Spice::instrumentRotation() const {
+  Rotation *Spice::instrumentRotation() const {
     return m_instrumentRotation;
   }
   

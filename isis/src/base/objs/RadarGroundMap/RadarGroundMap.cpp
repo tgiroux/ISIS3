@@ -61,7 +61,7 @@ namespace Isis {
   bool RadarGroundMap::SetFocalPlane(const double ux, const double uy,
                                      double uz) {
 
-    SpiceRotation *bodyFrame = p_camera->bodyRotation();
+    Rotation *bodyFrame = p_camera->bodyRotation();
     SpicePosition *spaceCraft = p_camera->instrumentPosition();
 
     // Get spacecraft position and velocity to create a state vector
@@ -139,7 +139,7 @@ namespace Isis {
     lookB[2] = X[2] - Xsc[2];
 
     std::vector<double> lookJ = bodyFrame->J2000Vector(lookB);
-    SpiceRotation *cameraFrame = p_camera->instrumentRotation();
+    Rotation *cameraFrame = p_camera->instrumentRotation();
     std::vector<double> lookC = cameraFrame->ReferenceVector(lookJ);
 
     SpiceDouble unitLookC[3];
@@ -292,7 +292,7 @@ namespace Isis {
 
       // See if we are done
       if((fabs(delTime) <= p_timeTolerance) || (fGuess == 0.0)) {
-        SpiceRotation *bodyFrame = p_camera->bodyRotation();
+        Rotation *bodyFrame = p_camera->bodyRotation();
         SpicePosition *spaceCraft = p_camera->instrumentPosition();
 
         // Get body fixed spacecraft velocity and position
@@ -338,7 +338,7 @@ namespace Isis {
         lookB[2] = X[2] - Xsc[2];
 
         std::vector<double> lookJ = bodyFrame->J2000Vector(lookB);
-        SpiceRotation *cameraFrame = p_camera->instrumentRotation(); //this is the pointer to the camera's SpiceRotation/instrumentatrotation object
+        Rotation *cameraFrame = p_camera->instrumentRotation(); //this is the pointer to the camera's SpiceRotation/instrumentatrotation object
         std::vector<double> lookC = cameraFrame->ReferenceVector(lookJ);
 
         SpiceDouble unitLookC[3];
@@ -384,7 +384,7 @@ namespace Isis {
     X[2] = spoint.GetZ().kilometers();
 
     // Compute body-fixed look vector
-    SpiceRotation *bodyFrame = p_camera->bodyRotation();
+    Rotation *bodyFrame = p_camera->bodyRotation();
     SpicePosition *spaceCraft = p_camera->instrumentPosition();
 
     std::vector<double> sJ(6);   // Spacecraft state vector (position and velocity) in J2000 frame
@@ -422,7 +422,7 @@ namespace Isis {
   double RadarGroundMap::ComputeXv(SpiceDouble X[3]) {
     // Get the spacecraft position (Xsc) and velocity (Vsc) in body fixed
     // coordinates
-    SpiceRotation *bodyFrame = p_camera->bodyRotation();
+    Rotation *bodyFrame = p_camera->bodyRotation();
     SpicePosition *spaceCraft = p_camera->instrumentPosition();
 
     // Load the state into Ssc
@@ -477,7 +477,7 @@ namespace Isis {
   bool RadarGroundMap::GetdXYdPosition(const SpicePosition::PartialType varType, int coefIndex,
                                        double *dx, double *dy) {
     SpicePosition *instPos = p_camera->instrumentPosition();
-    SpiceRotation *bodyRot = p_camera->bodyRotation();
+    Rotation *bodyRot = p_camera->bodyRotation();
 
     std::vector <double> d_lookJ(6);
     vequ_c(&(instPos->CoordinatePartial(varType, coefIndex))[0], &d_lookJ[0]);

@@ -27,7 +27,6 @@
 
 #include "MdisCamera.h"
 #include "TaylorCameraDistortionMap.h"
-
 #include "CameraDetectorMap.h"
 #include "CameraDistortionMap.h"
 #include "CameraFocalPlaneMap.h"
@@ -173,6 +172,7 @@ namespace Isis {
     double lineBoreSight = getDouble(ikernKey);
 
     //  Apply the boresight
+//    std::cout << "boresight: " << sampleBoreSight << ", " << lineBoreSight << std::endl; 
     focalMap->SetDetectorOrigin(sampleBoreSight, lineBoreSight);
 
     // Determine summing.  MDIS has two sources of summing or binning.
@@ -199,10 +199,12 @@ namespace Isis {
 
       ikernKey = "INS" + ikCode + "_FPUBIN_START_LINE";
       double fpuStartingLine = getDouble(ikernKey);
-      detMap->SetStartingDetectorLine(fpuStartingLine);
+     detMap->SetStartingDetectorLine(fpuStartingLine);
 #endif
+
       summing *= 2;
     }
+//    std::cout << "Summing: " << summing << std::endl; 
 
     //  Set summing/binning modes as an accumulation of FPU and MP binning.
     detMap->SetDetectorLineSumming(summing);
@@ -219,16 +221,17 @@ namespace Isis {
     // Valid Taylor Series parameters are in versions msgr_mdis_v120.ti IK
     // and above.   Note fnCode works for NAC as well as long as
     // filterNumber stays at 0 for the NAC only!
-    try {
-      TaylorCameraDistortionMap *distortionMap = new TaylorCameraDistortionMap(this);
-      distortionMap->SetDistortion(fnCode);
-    }
-    catch(IException &ie) {
-      string msg = "New MDIS NAC/WAC distortion models will invalidate previous "
-                   "SPICE - you may need to rerun spiceinit to get new kernels";
-      throw IException(ie, IException::User, msg, _FILEINFO_);
-    }
+//    try {
+//      TaylorCameraDistortionMap *distortionMap = new TaylorCameraDistortionMap(this);
+//      distortionMap->SetDistortion(fnCode);
+//    }
+//    catch(IException &ie) {
+//      string msg = "New MDIS NAC/WAC distortion models will invalidate previous "
+//                   "SPICE - you may need to rerun spiceinit to get new kernels";
+//      throw IException(ie, IException::User, msg, _FILEINFO_);
+//    }
 
+    new CameraDistortionMap(this);
     // Setup the ground and sky map
     new CameraGroundMap(this);
     new CameraSkyMap(this);
@@ -241,6 +244,8 @@ namespace Isis {
     // creating the cache since all kernels are unloaded, essentially
     // clearing the pool and whacking the frames definitions, required to
     iTime centerTime = etStart + (exposureDuration / 2.0);
+//    std::cout.precision(17);
+//    std::cout << "centerTime: " << centerTime.Et() << std::endl; 
     setTime(centerTime);
     LoadCache();
     NaifStatus::CheckErrors();

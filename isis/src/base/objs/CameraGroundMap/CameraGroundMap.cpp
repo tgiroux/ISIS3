@@ -181,8 +181,8 @@ namespace Isis {
     // Should a check be added to make sure SetImage has been called???
 
     // Get spacecraft vector in j2000 coordinates
-    SpiceRotation *bodyRot = p_camera->bodyRotation();
-    SpiceRotation *instRot = p_camera->instrumentRotation();
+    Rotation *bodyRot = p_camera->bodyRotation();
+    Rotation *instRot = p_camera->instrumentRotation();
     vector<double> pJ = bodyRot->J2000Vector(pB);
     vector<double> sJ = p_camera->instrumentPosition()->Coordinate();
 
@@ -301,7 +301,7 @@ namespace Isis {
     double fl = p_camera->DistortionMap()->UndistortedFocalPlaneZ();
 
     // Rotate look vector into camera frame
-    SpiceRotation *instRot = p_camera->instrumentRotation();
+    Rotation *instRot = p_camera->instrumentRotation();
     vector<double> lookC(3);
     lookC = instRot->ReferenceVector(m_lookJ);
 
@@ -340,7 +340,7 @@ namespace Isis {
     double fl = p_camera->DistortionMap()->UndistortedFocalPlaneZ();
 
     // Rotate J2000 look vector into camera frame
-    SpiceRotation *instRot = p_camera->instrumentRotation();
+    Rotation *instRot = p_camera->instrumentRotation();
     vector<double> lookC(3);
     lookC = instRot->ReferenceVector(m_lookJ);
 
@@ -382,8 +382,8 @@ namespace Isis {
     double fl = p_camera->DistortionMap()->UndistortedFocalPlaneZ();
 
     // Rotate body-fixed look vector into J2000 through the derivative rotation
-    SpiceRotation *bodyRot = p_camera->bodyRotation();
-    SpiceRotation *instRot = p_camera->instrumentRotation();
+    Rotation *bodyRot = p_camera->bodyRotation();
+    Rotation *instRot = p_camera->instrumentRotation();
     vector<double> dlookJ = bodyRot->toJ2000Partial(m_pB, varType, coefIndex);
     vector<double> lookC(3);
     vector<double> dlookC(3);
@@ -419,11 +419,11 @@ namespace Isis {
     double fl = p_camera->DistortionMap()->UndistortedFocalPlaneZ();
 
     // Rotate look vector into camera frame
-    SpiceRotation *instRot = p_camera->instrumentRotation();
+    Rotation *instRot = p_camera->instrumentRotation();
     vector<double> lookC(3);
     lookC = instRot->ReferenceVector(m_lookJ);
 
-    SpiceRotation *bodyRot = p_camera->bodyRotation();
+    Rotation *bodyRot = p_camera->bodyRotation();
     vector<double> d_lookJ = bodyRot->J2000Vector(d_pB);
     vector<double> d_lookC = instRot->ReferenceVector(d_lookJ);
 

@@ -732,7 +732,7 @@ namespace Isis {
     }
 
     //  Get the target state (starg)
-    SpiceRotation *rotate = _camera->instrumentRotation();
+    Rotation *rotate = _camera->instrumentRotation();
     SpiceDouble starg[6];  // Position and velocity vector in J2000
     SpiceDouble lt;
     spkez_c(targCode, rotate->EphemerisTime(), "J2000", "LT+S", scCode,
@@ -973,7 +973,7 @@ namespace Isis {
     sun = Target::lookupNaifBodyCode("SUN");
 
     //  Get the Sun to Messenger state matrix
-    SpiceRotation *rotate = _camera->bodyRotation();
+    Rotation *rotate = _camera->bodyRotation();
     SpiceDouble stateJ[6];  // Position and velocity vector in J2000
     SpiceDouble lt;
     spkez_c(sc , rotate->EphemerisTime(), "J2000", "LT+S", sun, stateJ, &lt);

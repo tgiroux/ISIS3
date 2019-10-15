@@ -332,8 +332,8 @@ namespace Isis {
 
       SpicePosition *sunPosition() const;
       SpicePosition *instrumentPosition() const;
-      SpiceRotation *bodyRotation() const;
-      SpiceRotation *instrumentRotation() const;
+      Rotation *bodyRotation() const;
+      Rotation *instrumentRotation() const;
       
       bool isUsingAle();
       bool hasKernels(Pvl &lab);
@@ -412,9 +412,9 @@ namespace Isis {
       SpiceDouble *m_endTimePadding; //!< Kernels pvl group EndPadding keyword value
 
       SpicePosition *m_instrumentPosition; //!< Instrument spice position
-      SpiceRotation *m_instrumentRotation; //!< Instrument spice rotation
+      Rotation *m_instrumentRotation; //!< Instrument spice rotation
       SpicePosition *m_sunPosition; //!< Sun spice position
-      SpiceRotation *m_bodyRotation; //!< Body spice rotation
+      Rotation *m_bodyRotation; //!< Body spice rotation
 
       bool m_allowDownsizing; //!< Indicates whether to allow downsizing
 

@@ -417,7 +417,7 @@ void IsisMain() {
     double et = etCenter - (((numEphem - 1) / 2) * dtEphem);
     for (int i = 0; i < numEphem; i++) {
       cam->setTime(iTime(et));
-      SpiceRotation *bodyRot = cam->bodyRotation();
+      Rotation *bodyRot = cam->bodyRotation();
       vector<double> pos = bodyRot->ReferenceVector(cam->instrumentPosition()->Coordinate());
 //TO DO: UNCOMMENT THE FOLLOWING LINE WHEN VELOCITY BLOBS ARE CORRECT IN ISIS
       //vector<double> vel = bodyRot->ReferenceVector(cam->instrumentPosition()->Velocity());
@@ -514,7 +514,7 @@ void IsisMain() {
     double et = etCenter - (((numEphem - 1) / 2) * dtEphem);
     for (int i = 0; i < numEphem; i++) {
       cam->setTime(iTime(et));
-      SpiceRotation *bodyRot = cam->bodyRotation();
+      Rotation *bodyRot = cam->bodyRotation();
       vector<double> pos = bodyRot->ReferenceVector(cam->instrumentPosition()->Coordinate());
 //TO DO: UNCOMMENT THE FOLLOWING LINE WHEN VELOCITY BLOBS ARE CORRECT IN ISIS
       //vector<double> vel = bodyRot->ReferenceVector(cam->instrumentPosition()->Velocity());
