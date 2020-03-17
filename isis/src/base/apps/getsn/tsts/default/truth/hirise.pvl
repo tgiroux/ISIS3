@@ -1,0 +1,6 @@
+Group = Results
+  Filename          = input/hirise.cub
+  SerialNumber      = MRO/HIRISE/865212231:13431/RED0/0
+  ObservationNumber = MRO/HIRISE/865212231:13431
+End_Group
+End

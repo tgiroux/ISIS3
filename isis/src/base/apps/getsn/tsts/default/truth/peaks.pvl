@@ -1,0 +1,9 @@
+Group = Results
+  ObservationNumber = Unknown
+End_Group
+End
+Group = Results
+  Filename     = input/peaks.cub
+  SerialNumber = Unknown
+End_Group
+End
