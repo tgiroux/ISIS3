@@ -19,17 +19,6 @@ void IsisMain() {
 
   UserInterface &ui = Application::GetUserInterface();
 
-  PvlGroup results = getsn(ui);
-
-
-  if( (ui.WasEntered("TO")) && (ui.IsInteractive()) ) {
-    Application::GuiLog(results);
-  }
-  else {
-    for (int i = 0; i < sn.keywords(); i++) {
-      cout << results[i][0] << endl;
-    }
-  }
-  SessionLog::TheLog().AddResults(results);
+  getsn(ui);
 
 }

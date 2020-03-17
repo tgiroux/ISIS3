@@ -7,7 +7,7 @@
 
 namespace Isis {
  
-  extern PvlGroup getsn( UserInterface &ui );
+  extern void getsn( UserInterface &ui );
 }
 
 #endif

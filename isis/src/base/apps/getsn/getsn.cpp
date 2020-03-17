@@ -20,7 +20,7 @@ using namespace std;
 
 namespace Isis {
 
-  PvlGroup getsn( UserInterface &ui ) {
+ void getsn( UserInterface &ui ) {
 
     // Open the input cube
     Cube cube;
@@ -76,9 +76,22 @@ namespace Isis {
 	}
 	txt.PutLine(line);
       }
+      
+      // Construct a label with the results
+      if ( ui.IsInteractive() ) {
+	Application::GuiLog(sn);
+      }
+    }
+    else {
+      for (int i = 0; i < sn.keywords(); i++) {
+	cout << sn[i][0] << endl;
+      }
     }
 
-    return sn;
+    // Write the results to the log but not the terminal
+    SessionLog::TheLog().AddResults(sn);
+
+
     
   }
 
