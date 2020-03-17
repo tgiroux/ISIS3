@@ -1,10 +1,6 @@
 #include "Isis.h"
 
-#include "UserInterface.h"
-#include "Application.h"
-#include "Pvl.h"
 #include "getsn.h"
-
 
 using namespace Isis;
 using namespace std;
