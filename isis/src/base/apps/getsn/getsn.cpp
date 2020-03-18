@@ -20,12 +20,16 @@ using namespace std;
 
 namespace Isis {
 
- void getsn( UserInterface &ui ) {
+ void getsn( UserInterface &ui, Pvl *log ) {
 
     // Open the input cube
-    Cube cube;
-    QString from = ui.GetFileName("FROM");
-    cube.open(from, "r");
+    Cube *cube = new Cube( ui.GetFileName("FROM"), "r");
+    
+    getsn( cube, ui, log );
+
+    }
+
+void getsn( Cube *cube, UserInterface &ui, Pvl *log ) {
 
     // Determine if output should be written base on parameters
     bool WriteFile = ui.GetBoolean("FILE");
@@ -42,7 +46,7 @@ namespace Isis {
     }
 
     // Extract label from cube file
-    Pvl *label = cube.label();
+    Pvl *label = cube->label();
 
     PvlGroup sn("Results");
 
@@ -90,7 +94,7 @@ namespace Isis {
 
     // Write the results to the log but not the terminal
     SessionLog::TheLog().AddResults(sn);
-
+    log->addGroup(sn);
 
     
   }
