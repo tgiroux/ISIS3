@@ -68,8 +68,7 @@ void getsn( Cube *cube, UserInterface &ui, Pvl *log ) {
       }
       // FLAT option
       else {
-	bool append = ui.GetBoolean("APPEND");
-	// Open in append or overwrite
+	bool append = ui.GetBoolean("APPEND");	// Open in append or overwrite
 	TextFile txt(ui.GetFileName("TO"), append ? "append" : "overwrite");
 
 	// Build QString

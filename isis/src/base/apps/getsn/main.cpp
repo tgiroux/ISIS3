@@ -1,7 +1,7 @@
 #include "Isis.h"
 
 #include "getsn.h"
-
+#include "PvlGroup.h"
 #include "Pvl.h"
 
 using namespace Isis;
@@ -18,4 +18,12 @@ void IsisMain() {
 
   getsn(ui, &appLog);
 
+  PvlGroup results = appLog.findGroup("Results");
+
+  if( ui.WasEntered("TO") && ui.IsInteractive() ) {
+    Application::GuiLog(results);
+  }
+
+  SessionLog::TheLog().AddResults(results);
+  
 }
