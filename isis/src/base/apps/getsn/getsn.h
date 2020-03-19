@@ -7,6 +7,10 @@
 namespace Isis {
  
   extern void getsn( UserInterface &ui, Pvl* log );
+
+  
+  extern void getsn( Cube *cube, UserInterface &ui, Pvl *log );
+
 }
 
 #endif
