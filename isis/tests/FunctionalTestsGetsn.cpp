@@ -5,7 +5,6 @@
 #include <QStringList>
 #include <QFile>
 
-
 #include "getsn.h"
 #include "Fixtures.h"
 #include "Pvl.h"
@@ -15,12 +14,10 @@
 
 #include "gmock/gmock.h"
 
-
 using namespace Isis;
 
 
 static QString APP_XML = FileName("$ISISROOT/bin/xml/getsn.xml").expanded();
-
 static QString FROM_PARAM = "FROM=data/defaultImage/defaultCube.pvl";
 
 // check for all correct outputs, no other test needs to check for true params, only false
@@ -34,8 +31,8 @@ TEST_F(DefaultCube, FunctionalTestGetsnAllTrue) {
                            "SN=TRUE",
                            "OBSERVATION=TRUE"};
   UserInterface options(APP_XML, args);
-
   Pvl appLog;
+
   getsn( testCube, options, &appLog );
   PvlGroup results = appLog.findGroup("Results");  
   
@@ -66,6 +63,7 @@ TEST_F(DefaultCube, FunctionalTestGetsnAllFalse) {
 // Test the param DEFAULT=TRUE
 // when no SN can be generated, the SN should default to Filename
 TEST_F(DefaultCube, FunctionalTestGetsnDefaultSn) {
+  QString fileName = "default.cub";
   QVector<QString> args = { FROM_PARAM,
 			    "FILE=TRUE",
                             "DEFAULT=TRUE" };
@@ -77,7 +75,7 @@ TEST_F(DefaultCube, FunctionalTestGetsnDefaultSn) {
   getsn( testCube, options, &appLog );
   PvlGroup results = appLog.findGroup("Results");  
 
-  EXPECT_PRED_FORMAT2(AssertQStringsEqual, "default.cub" , results.findKeyword("SerialNumber") );
+  EXPECT_PRED_FORMAT2(AssertQStringsEqual, fileName , results.findKeyword("SerialNumber") );
 }
 
 
@@ -90,8 +88,8 @@ TEST_F(DefaultCube, FunctionalTestGetsnFlat) {
 			    "FORMAT=FLAT",
                             "TO="+flatFile.fileName() };
   UserInterface options(APP_XML, args);
-  
   Pvl appLog;
+
   getsn( testCube, options, &appLog );
 
   QTextStream flatStream(&flatFile);
