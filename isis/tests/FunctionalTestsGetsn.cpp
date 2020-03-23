@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <QIODevice>
 #include <QTextStream>
 #include <QStringList>
 #include <QFile>
@@ -20,12 +21,11 @@ using namespace Isis;
 static QString APP_XML = FileName("$ISISROOT/bin/xml/getsn.xml").expanded();
 static QString FROM_PARAM = "FROM=data/defaultImage/defaultCube.pvl";
 
-// check for all correct outputs, no other test needs to check for true params, only false
+// check for all correct outputs
 TEST_F(DefaultCube, FunctionalTestGetsnAllTrue) {
   QString expectedFilename = "data/defaultImage/defaultCube.pvl";
   QString expectedSN = "Viking1/VISB/33322515";
   QString expectedON = "Viking1/VISB/33322515";
-
   QVector<QString> args = {FROM_PARAM,
 			   "FILE=TRUE",
                            "SN=TRUE",
@@ -43,10 +43,10 @@ TEST_F(DefaultCube, FunctionalTestGetsnAllTrue) {
 
 
 // Default Parameters are file=false, sn=true, observation=false
-// Set sn=false to test that all false params give expected output
+// Set sn=false; so all output params are false
+// resulting data should not contain any of the three output types
 TEST_F(DefaultCube, FunctionalTestGetsnAllFalse) {
-  QVector<QString> args = { FROM_PARAM,
-			    "SN=FALSE" };
+  QVector<QString> args = { FROM_PARAM, "SN=FALSE" };
   UserInterface options(APP_XML, args);
   Pvl appLog;
 
@@ -56,17 +56,14 @@ TEST_F(DefaultCube, FunctionalTestGetsnAllFalse) {
   EXPECT_FALSE( results.hasKeyword("Filename") );
   EXPECT_FALSE( results.hasKeyword("SerialNumber") );
   EXPECT_FALSE( results.hasKeyword("ObservationNumber") );
-  
 }
 
 
 // Test the param DEFAULT=TRUE
-// when no SN can be generated, the SN should default to Filename
-TEST_F(DefaultCube, FunctionalTestGetsnDefaultSn) {
+// when no SN can be generated, the SN should default to the file name
+TEST_F(DefaultCube, FunctionalTestGetsnDefaultTrue) {
   QString fileName = "default.cub";
-  QVector<QString> args = { FROM_PARAM,
-			    "FILE=TRUE",
-                            "DEFAULT=TRUE" };
+  QVector<QString> args = { FROM_PARAM, "DEFAULT=TRUE" };
   UserInterface options(APP_XML, args);
   Pvl appLog;
   Pvl *testLabel = testCube->label();
@@ -75,15 +72,31 @@ TEST_F(DefaultCube, FunctionalTestGetsnDefaultSn) {
   getsn( testCube, options, &appLog );
   PvlGroup results = appLog.findGroup("Results");  
 
-  EXPECT_PRED_FORMAT2(AssertQStringsEqual, fileName , results.findKeyword("SerialNumber") );
+  EXPECT_PRED_FORMAT2(AssertQStringsEqual, fileName , results.findKeyword("SerialNumber"));
 }
 
 
-// Test flatfile mode
+// Test the param DEFAULT=FALSE
+// when no SN can be generated, the SN should default to "Unknown"
+TEST_F(DefaultCube, FunctionalTestGetsnDefaultFalse) {
+  QString fileName = "Unknown";
+  QVector<QString> args = { FROM_PARAM, "DEFAULT=FALSE" };
+  UserInterface options(APP_XML, args);
+  Pvl appLog;
+  Pvl *testLabel = testCube->label();
+  testLabel->findObject( "IsisCube" ).deleteGroup( "Instrument" );
+  
+  getsn( testCube, options, &appLog );
+  PvlGroup results = appLog.findGroup("Results");  
+
+  EXPECT_PRED_FORMAT2(AssertQStringsEqual, fileName , results.findKeyword("SerialNumber"));
+}
+
+
+// Test flatfile mode gives expected output
 TEST_F(DefaultCube, FunctionalTestGetsnFlat) {
   QString expectedSN = "Viking1/VISB/33322515";
-    
-  QFile flatFile(tempDir.path()+"testOut.txt");
+  QFile flatFile(tempDir.path()+"/testOut.txt");
   QVector<QString> args = { FROM_PARAM,
 			    "FORMAT=FLAT",
                             "TO="+flatFile.fileName() };
@@ -92,13 +105,11 @@ TEST_F(DefaultCube, FunctionalTestGetsnFlat) {
 
   getsn( testCube, options, &appLog );
 
+  flatFile.open(QIODevice::ReadOnly | QIODevice::Text);
   QTextStream flatStream(&flatFile);
-  while(!flatStream.atEnd()) {
-    QString line = flatStream.readLine();
-    QStringList fields = line.split(",");
+  QString line = flatStream.readLine();
 
-    EXPECT_PRED_FORMAT2(AssertQStringsEqual, fields.value(1), expectedSN);
-  }
+  EXPECT_PRED_FORMAT2(AssertQStringsEqual, line, expectedSN);
 }
 
 
@@ -138,4 +149,3 @@ TEST_F(DefaultCube, FunctionalTestGetsnOverwrite) {
 
   EXPECT_TRUE( sizeInitial == sizeFinal );
 }
-
