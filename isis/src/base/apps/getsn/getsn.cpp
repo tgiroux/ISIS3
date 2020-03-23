@@ -20,23 +20,24 @@ using namespace std;
 
 namespace Isis {
 
- void getsn( UserInterface &ui, Pvl *log ) {
+  void getsn( UserInterface &ui, Pvl *log ) {
 
     // Open the input cube
     Cube *cube = new Cube( ui.GetFileName("FROM"), "r");
     
     getsn( cube, ui, log );
 
-    }
+  }
 
 
-void getsn( Cube *cube, UserInterface &ui, Pvl *log ) {
+  void getsn( Cube *cube, UserInterface &ui, Pvl *log ) {
 
     // Determine if output should be written base on parameters
     bool WriteFile = ui.GetBoolean("FILE");
     bool WriteSN = ui.GetBoolean("SN");
     bool WriteObservation = ui.GetBoolean("OBSERVATION");
 
+    QString from = ui.GetFileName("FROM");    
     QString format = ui.GetString("FORMAT");
     bool pvl;
     if (format == "PVL") {
@@ -81,11 +82,7 @@ void getsn( Cube *cube, UserInterface &ui, Pvl *log ) {
 	}
 	txt.PutLine(line);
       }
-      
-      // Construct a label with the results
-      if ( ui.IsInteractive() ) {
-       	Application::GuiLog(sn);
-      }
+            
     }
     else {
       for (int i = 0; i < sn.keywords(); i++) {
@@ -94,7 +91,7 @@ void getsn( Cube *cube, UserInterface &ui, Pvl *log ) {
     }
 
     // Write the results to the log but not the terminal
-    SessionLog::TheLog().AddResults(sn);
+    // SessionLog::TheLog().AddResults(sn);
     log->addGroup(sn);
 
     

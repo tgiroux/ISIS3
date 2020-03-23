@@ -4,6 +4,17 @@
 #include "PvlGroup.h"
 #include "Pvl.h"
 
+#include "Blob.h"
+#include "Cube.h"
+#include "History.h"
+#include "ObservationNumber.h"
+#include "Preference.h"
+
+#include "SerialNumber.h"
+#include "SessionLog.h"
+#include "TextFile.h"
+
+
 using namespace Isis;
 using namespace std;
 

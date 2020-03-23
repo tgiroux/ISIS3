@@ -1,0 +1,6 @@
+# ninja log v5
+1775	1778	0	gtest/googlemock/src/gmock-all.cc	87c2bc0beaf1d91d
+1775	1779	0	gtest/googlemock/src/gmock_main.cc	87c2bc0beaf1d91d
+1776	1780	0	gtest/googletest/src/gtest_main.cc	87c2bc0beaf1d91d
+1776	1781	0	gtest/googletest/src/gtest-all.cc	87c2bc0beaf1d91d
+1774	7632	0	CMakeFiles/incs	a2be404f2618705c

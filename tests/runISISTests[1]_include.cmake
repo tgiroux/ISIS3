@@ -1,0 +1,5 @@
+if(EXISTS "/home/tgiroux/Documents/ISIS3/tests/runISISTests[1]_tests.cmake")
+  include("/home/tgiroux/Documents/ISIS3/tests/runISISTests[1]_tests.cmake")
+else()
+  add_test(runISISTests_NOT_BUILT runISISTests_NOT_BUILT)
+endif()
