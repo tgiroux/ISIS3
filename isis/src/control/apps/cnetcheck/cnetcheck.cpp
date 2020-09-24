@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <set>
 
@@ -627,7 +628,7 @@ namespace Isis {
         }
 
         QList< ControlMeasure * > measures = cnet.GetMeasuresInCube(serialNumber);
-        for (int cm = 0; cm < measures.size(); cm++) {
+        for (int cm = 0; cm < measures.size() - 1; cm++) {
           ControlMeasure *measure = measures[cm];
           ControlPoint *point = measure->Parent();
 
@@ -635,12 +636,14 @@ namespace Isis {
 
           // Check the exact measure location
           bool setCamera = false;
-          if (createdCamera) {
+         
+          if (createdCamera && !IsSpecial(measure->GetSample()) && !IsSpecial(measure->GetLine())) {
             setCamera = cam->SetImage(measure->GetSample(), measure->GetLine());
           }
 
           // Record it if it failed at anything
           if (!createdCamera || !setCamera) {
+       
             noLatLonSerialNumbers.insert(serialNumber);
             noLatLonControlPoints[serialNumber].insert(point->GetId());
           }
