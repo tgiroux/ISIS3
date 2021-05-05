@@ -39,13 +39,14 @@ namespace Isis {
       //   since it's cheap, and because we are uncertain of request patterns.
       //   40X with a maximum should keep a reasonable number of results
       //   around.
-      int numToKeep = (int)ceil(avgLargestDim / largestChunkDim) * 1;
+      int numToKeep = (int)ceil(avgLargestDim / largestChunkDim) * 10;
 
       // Limit to ~10MB
       int approxBytesPerChunk = allocated[0]->getByteCount();
 
       int tenMB = 10 * 1024 * 1024; // 10MB in bytes
       if(numToKeep * approxBytesPerChunk > tenMB) {
+        std::cout << "whoops 10M limit" << std::endl;
         numToKeep = tenMB / approxBytesPerChunk;
       }
 

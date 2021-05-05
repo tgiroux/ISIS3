@@ -375,10 +375,12 @@ namespace Isis {
 
     // Process Band Priority with no tracking
     if (m_imageOverlay == UseBandPlacementCriteria && !m_trackingEnabled ) {
+      std::cout << "band priority" << std::endl;
       BandPriorityWithNoTracking(iss, isl, isb, ins, inl, inb, bandPriorityInputBandNumber,
                                  bandPriorityOutputBandNumber);
     }
     else {
+      std::cout << "faster? method" << std::endl;
       // Create portal buffers for the input and output files
       Portal iPortal(ins, 1, InputCubes[0]->pixelType());
       Portal oPortal(ins, 1, OutputCubes[0]->pixelType());
@@ -388,7 +390,9 @@ namespace Isis {
       for (int ib = isb, ob = m_osb; ib < (isb + inb) && ob <= m_onb; ib++, ob++) {
         for (int il = isl, ol = m_osl; il < isl + inl; il++, ol++) {
           // Set the position of the portals in the input and output cubes
+          std::cout << "read in" << std::endl;
           iPortal.SetPosition(iss, il, ib);
+          std::cout << "read out" << std::endl;
           InputCubes[0]->read(iPortal);
 
           oPortal.SetPosition(m_oss, ol, ob);
@@ -428,8 +432,10 @@ namespace Isis {
               Portal iComparePortal( ins, 1, InputCubes[0]->pixelType() );
               Portal oComparePortal( ins, 1, OutputCubes[0]->pixelType() );
               iComparePortal.SetPosition(iss, il, bandPriorityInputBandNumber);
+              std::cout << "read incompare" << std::endl;
               InputCubes[0]->read(iComparePortal);
               oComparePortal.SetPosition(m_oss, ol, bandPriorityOutputBandNumber);
+              std::cout << "read outcompare" << std::endl;
               OutputCubes[0]->read(oComparePortal);
 
               if (iPixelOrigin == iIndex) {
@@ -1396,9 +1402,14 @@ void ProcessMosaic::BandPriorityWithNoTracking(int iss, int isl, int isb, int in
     for (int inLine = isl, outLine = m_osl; inLine < isl + inl; inLine++, outLine++) {
 //       Set the position of the portals in the input and output cubes
       iComparePortal.SetPosition(iss, inLine, bandPriorityInputBandNumber);
+      std::cout << "read in icompare" << std::endl;
+
       InputCubes[0]->read(iComparePortal);
 
       oComparePortal.SetPosition(m_oss, outLine, bandPriorityOutputBandNumber);
+
+      std::cout << "read out icompare" << std::endl;
+
       OutputCubes[0]->read(oComparePortal);
 
       Portal iPortal( ins, 1, InputCubes[0]->pixelType() );
@@ -1430,9 +1441,11 @@ void ProcessMosaic::BandPriorityWithNoTracking(int iss, int isl, int isb, int in
         for (int ib = isb, ob = m_osb; ib < (isb + inb) && ob <= m_onb; ib++, ob++) {
 //           Set the position of the portals in the input and output cubes
           iPortal.SetPosition(iss, inLine, ib);
+          std::cout << "read in" << std::endl;
           InputCubes[0]->read(iPortal);
 
           oPortal.SetPosition(m_oss, outLine, ob);
+          std::cout << "read out" << std::endl;
           OutputCubes[0]->read(oPortal);
 
           for (int iPixel = 0; iPixel < ins; iPixel++) {

@@ -80,6 +80,9 @@ namespace Isis {
     bool success = false;
 
     QFile * dataFile = getDataFile();
+
+    std::cout << dataFile->fileName() << " " << startByte << std::endl;
+
     if(dataFile->seek(startByte)) {
       QByteArray binaryData = dataFile->read(chunkToFill.getByteCount());
 
