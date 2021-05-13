@@ -40,10 +40,9 @@ int main() {
     cout << pts->toString() << endl;
 
     // Create a multi polygon
-    vector<geos::geom::Geometry *> polys;
-    polys.push_back(globalFactory->createPolygon(
-                      globalFactory->createLinearRing(pts), NULL));
-    geos::geom::MultiPolygon *mPolygon = globalFactory->createMultiPolygon(&polys);
+    vector<unique_ptr<geos::geom::Geometry>> polys;
+    polys.emplace_back(globalFactory->createPolygon(globalFactory->createLinearRing(pts), NULL));
+    unique_ptr<geos::geom::MultiPolygon> mPolygon = globalFactory->createMultiPolygon(move(polys));
 
     // Add more coordinates so we can make sure we did a deep copy when we
     // created the multipolygon
@@ -75,12 +74,11 @@ int main() {
     pts3->add(geos::geom::Coordinate(0.123456789, 0.123456789));
 
     try {
-      vector<geos::geom::Geometry *> polys3;
-      polys3.push_back(globalFactory->createPolygon(
+      vector<unique_ptr<geos::geom::Geometry>> polys3;
+      polys3.emplace_back(globalFactory->createPolygon(
                          globalFactory->createLinearRing(pts3), NULL));
-      geos::geom::MultiPolygon *mPolygon3 = globalFactory->createMultiPolygon(&polys3);
+      unique_ptr<geos::geom::MultiPolygon>mPolygon3 = globalFactory->createMultiPolygon(move(polys3));
       a.SetPolygon(*mPolygon3);
-      delete mPolygon3;
     }
     catch(geos::util::GEOSException *exc) {
       cout << "GEOS Exception: " << exc->what() << endl;
@@ -98,12 +96,11 @@ int main() {
     pts4->add(geos::geom::Coordinate(10.123456789, 10.123456789));
 
     try {
-      vector<geos::geom::Geometry *> polys4;
-      polys4.push_back(globalFactory->createPolygon(
+      vector<unique_ptr<geos::geom::Geometry>> polys4;
+      polys4.emplace_back(globalFactory->createPolygon(
                          globalFactory->createLinearRing(pts4), NULL));
-      geos::geom::MultiPolygon *mPolygon4 = globalFactory->createMultiPolygon(&polys4);
-      a.SetPolygon(mPolygon4);
-      delete mPolygon4;
+      unique_ptr<geos::geom::MultiPolygon> mPolygon4 = globalFactory->createMultiPolygon(move(polys4));
+      a.SetPolygon(*mPolygon4);
     }
     catch(geos::util::GEOSException *exc) {
       cout << "GEOS Exception: " << exc->what() << endl;
@@ -126,11 +123,11 @@ int main() {
     pts->add(geos::geom::Coordinate(0.123456789, 0.123456789));
 
     try {
-      vector<geos::geom::Geometry *> polys;
-      polys.push_back(globalFactory->createPolygon(
+      vector<unique_ptr<geos::geom::Geometry>> polys;
+      polys.emplace_back(globalFactory->createPolygon(
                         globalFactory->createLinearRing(pts), NULL));
 
-      geos::geom::MultiPolygon *mPolygon = globalFactory->createMultiPolygon(&polys);
+      unique_ptr<geos::geom::MultiPolygon> mPolygon = globalFactory->createMultiPolygon(move(polys));
 
       ImageOverlap a("idFour", *mPolygon);
       PrintImageOverlap(a);
