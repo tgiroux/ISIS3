@@ -273,56 +273,89 @@ namespace Isis {
   };
 
   class CSMCubeFixture : public SmallCube {
-  protected:
-    QString filename;
-    MockRasterGM mockModel;
+    protected:
+      QString filename;
+      MockRasterGM mockModel;
 
-    void SetUp() override;
-};
-
-
-class CSMCameraFixture : public CSMCubeFixture {
-  protected:
-    Camera *testCam;
-
-    void SetUp() override;
-};
+      void SetUp() override;
+  };
 
 
-class CSMCameraSetFixture : public CSMCameraFixture {
-  protected:
-    csm::Ellipsoid wgs84;
-    csm::ImageCoord imagePt;
-    csm::EcefCoord groundPt;
-    csm::EcefLocus imageLocus;
+  class CSMCameraFixture : public CSMCubeFixture {
+    protected:
+      Camera *testCam;
 
-    void SetUp() override;
-};
+      void SetUp() override;
+  };
 
 
-class CSMCameraDemFixture : public CSMCubeFixture {
-  protected:
-    Camera *testCam;
-    double demRadius;
+  class CSMCameraSetFixture : public CSMCameraFixture {
+    protected:
+      csm::Ellipsoid wgs84;
+      csm::ImageCoord imagePt;
+      csm::EcefCoord groundPt;
+      csm::EcefLocus imageLocus;
 
-    void SetUp() override;
-};
+      void SetUp() override;
+  };
 
-class HistoryBlob : public TempTestingFiles {
-  protected:
-    Blob historyBlob;
-    PvlObject historyPvl;
 
-    void SetUp() override;
-};
+  class CSMCameraDemFixture : public CSMCubeFixture {
+    protected:
+      Camera *testCam;
+      double demRadius;
 
-class NullPixelCube : public TempTestingFiles {
-  protected:
-    Cube *testCube;
+      void SetUp() override;
+  };
 
-    void SetUp() override;
-    void TearDown() override;
-};
+  class HistoryBlob : public TempTestingFiles {
+    protected:
+      Blob historyBlob;
+      PvlObject historyPvl;
+
+      void SetUp() override;
+  };
+
+  class NullPixelCube : public TempTestingFiles {
+    protected:
+      Cube *testCube;
+
+      void SetUp() override;
+      void TearDown() override;
+  };
+
+  class MiniRFNetwork : public TempTestingFiles {
+    protected:
+      Cube *testCube1;
+      Cube *testCube2;
+      Cube *testCube3;
+
+      FileList *cubeList;
+      QString cubeListFile;
+
+      ControlNet *network;
+      QString controlNetPath;
+
+      void SetUp() override;
+      void TearDown() override;
+  };
+
+  class VikThmNetwork : public TempTestingFiles {
+    protected:
+      Cube *testCube1;
+      Cube *testCube2;
+      Cube *testCube3;
+      Cube *testCube4;
+
+      FileList *cubeList;
+      QString cubeListFile;
+
+      ControlNet *network;
+      QString controlNetPath;
+
+      void SetUp() override;
+      void TearDown() override;
+  };
 }
 
 #endif
